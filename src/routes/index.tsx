@@ -1,86 +1,69 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
+import { ArrowRight, BookOpen, Compass, Globe2, ShieldCheck, Sparkles } from 'lucide-react'
+import { AccessMapPreview } from '#/components/AccessMapPreview'
+import { PassportSelector } from '#/components/PassportSelector'
+import { fixtureAccess } from '#/server/travel-intelligence/fixture/fixtures'
 
-export const Route = createFileRoute('/')({ component: App })
+export const Route = createFileRoute('/')({
+  component: HomePage,
+  head: () => ({
+    meta: [
+      { title: 'Travel Intelligence — Explore the world through your passport' },
+      { name: 'description', content: 'See where your passport can take you, compare access, and understand entry requirements.' },
+    ],
+  }),
+})
 
-function App() {
+const preview = fixtureAccess('nigeria')
+
+function HomePage() {
   return (
-    <main className="page-wrap px-4 pb-8 pt-14">
-      <section className="island-shell rise-in relative overflow-hidden rounded-[2rem] px-6 py-10 sm:px-10 sm:py-14">
-        <div className="pointer-events-none absolute -left-20 -top-24 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(79,184,178,0.32),transparent_66%)]" />
-        <div className="pointer-events-none absolute -bottom-20 -right-20 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(47,106,74,0.18),transparent_66%)]" />
-        <p className="island-kicker mb-3">TanStack Start Base Template</p>
-        <h1 className="display-title mb-5 max-w-3xl text-4xl leading-[1.02] font-bold tracking-tight text-[var(--sea-ink)] sm:text-6xl">
-          Start simple, ship quickly.
-        </h1>
-        <p className="mb-8 max-w-2xl text-base text-[var(--sea-ink-soft)] sm:text-lg">
-          This base starter intentionally keeps things light: two routes, clean
-          structure, and the essentials you need to build from scratch.
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <a
-            href="/about"
-            className="rounded-full border border-[rgba(50,143,151,0.3)] bg-[rgba(79,184,178,0.14)] px-5 py-2.5 text-sm font-semibold text-[var(--lagoon-deep)] no-underline transition hover:-translate-y-0.5 hover:bg-[rgba(79,184,178,0.24)]"
-          >
-            About This Starter
-          </a>
-          <a
-            href="https://tanstack.com/router"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-full border border-[rgba(23,58,64,0.2)] bg-white/50 px-5 py-2.5 text-sm font-semibold text-[var(--sea-ink)] no-underline transition hover:-translate-y-0.5 hover:border-[rgba(23,58,64,0.35)]"
-          >
-            Router Guide
-          </a>
+    <main>
+      <section className="hero page-shell">
+        <div className="hero-copy">
+          <p className="script-kicker">The world, made personal</p>
+          <h1>Explore the world through <em>your passport.</em></h1>
+          <p className="hero-lede">Visa intelligence shaped around where you’re from—so you can see what is open, what needs planning, and where to go next.</p>
+          <PassportSelector />
+          <div className="trust-line"><ShieldCheck aria-hidden="true" /><span>Clear requirements</span><span>Source-aware guidance</span><span>No booking noise</span></div>
+        </div>
+        <div className="hero-orbit" aria-hidden="true">
+          <div className="orbit-globe"><Globe2 /><span className="orbit-ring ring-one" /><span className="orbit-ring ring-two" /></div>
+          <div className="floating-note note-one"><span>🇯🇵</span><div><small>Japan</small><strong>Visa required</strong></div></div>
+          <div className="floating-note note-two"><span>🇰🇪</span><div><small>Kenya</small><strong>ETA access</strong></div></div>
+          <div className="floating-note note-three"><span>🇷🇼</span><div><small>Rwanda</small><strong>On arrival</strong></div></div>
         </div>
       </section>
 
-      <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          [
-            'Type-Safe Routing',
-            'Routes and links stay in sync across every page.',
-          ],
-          [
-            'Server Functions',
-            'Call server code from your UI without creating API boilerplate.',
-          ],
-          [
-            'Streaming by Default',
-            'Ship progressively rendered responses for faster experiences.',
-          ],
-          [
-            'Tailwind Native',
-            'Design quickly with utility-first styling and reusable tokens.',
-          ],
-        ].map(([title, desc], index) => (
-          <article
-            key={title}
-            className="island-shell feature-card rise-in rounded-2xl p-5"
-            style={{ animationDelay: `${index * 90 + 80}ms` }}
-          >
-            <h2 className="mb-2 text-base font-semibold text-[var(--sea-ink)]">
-              {title}
-            </h2>
-            <p className="m-0 text-sm text-[var(--sea-ink-soft)]">{desc}</p>
-          </article>
-        ))}
+      <section className="page-shell metric-strip" aria-label="Nigerian passport access preview">
+        <div><strong>29</strong><span>visa-free</span></div>
+        <div><strong>15</strong><span>on arrival</span></div>
+        <div><strong>41</strong><span>eVisa</span></div>
+        <div><strong>2</strong><span>ETA</span></div>
+        <p>Example fixture data for the current design phase.</p>
       </section>
 
-      <section className="island-shell mt-8 rounded-2xl p-6">
-        <p className="island-kicker mb-2">Quick Start</p>
-        <ul className="m-0 list-disc space-y-2 pl-5 text-sm text-[var(--sea-ink-soft)]">
-          <li>
-            Edit <code>src/routes/index.tsx</code> to customize the home page.
-          </li>
-          <li>
-            Update <code>src/components/Header.tsx</code> and{' '}
-            <code>src/components/Footer.tsx</code> for brand links.
-          </li>
-          <li>
-            Add routes in <code>src/routes</code> and tweak visual tokens in{' '}
-            <code>src/styles.css</code>.
-          </li>
-        </ul>
+      <div className="page-shell section-space"><AccessMapPreview snapshot={preview} /></div>
+
+      <section className="page-shell editorial-section">
+        <div className="section-heading"><div><p className="eyebrow">Choose your way in</p><h2>Know where—or discover what’s possible.</h2></div><p>The experience works whether you already have a destination in mind or are still looking for inspiration.</p></div>
+        <div className="journey-grid">
+          <Link to="/visa/$passportSlug/$destinationSlug" params={{ passportSlug: 'nigeria', destinationSlug: 'japan' }} className="journey-card intent-card">
+            <BookOpen aria-hidden="true" /><span className="eyebrow">I know where I’m going</span><h3>Nigeria → Japan</h3><p>See the requirement, documents, process, and evidence behind the answer.</p><span className="text-link">Check a route <ArrowRight /></span>
+          </Link>
+          <Link to="/explore/$passportSlug" params={{ passportSlug: 'nigeria' }} className="journey-card discover-card">
+            <Compass aria-hidden="true" /><span className="eyebrow">Show me what’s possible</span><h3>Open the world view</h3><p>Filter destinations by access type and move naturally from the map into detail.</p><span className="text-link">Explore access <ArrowRight /></span>
+          </Link>
+        </div>
+      </section>
+
+      <section className="page-shell principles-section">
+        <div><Sparkles aria-hidden="true" /><h2>Clarity for consequential travel decisions.</h2></div>
+        <div className="principle-list">
+          <article><span>01</span><div><h3>See the whole picture</h3><p>Access categories, regional patterns, and destination detail stay connected.</p></div></article>
+          <article><span>02</span><div><h3>Understand uncertainty</h3><p>Missing, restricted, or unverified information is stated plainly.</p></div></article>
+          <article><span>03</span><div><h3>Verify before you travel</h3><p>Official sources and freshness appear when the provider supplies them.</p></div></article>
+        </div>
       </section>
     </main>
   )

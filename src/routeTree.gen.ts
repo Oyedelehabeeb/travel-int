@@ -11,11 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
-import { Route as DemoStoreRouteImport } from './routes/demo/store'
-import { Route as DemoTableRouteImport } from './routes/demo/table'
-import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
-import { Route as DemoFormAddressRouteImport } from './routes/demo/form.address'
-import { Route as DemoFormSimpleRouteImport } from './routes/demo/form.simple'
+import { Route as DestinationsDestinationSlugRouteImport } from './routes/destinations.$destinationSlug'
+import { Route as ExplorePassportSlugRouteImport } from './routes/explore.$passportSlug'
+import { Route as PassportsPassportSlugRouteImport } from './routes/passports.$passportSlug'
+import { Route as CompareFirstPassportSlugSecondPassportSlugRouteImport } from './routes/compare.$firstPassportSlug.$secondPassportSlug'
+import { Route as VisaPassportSlugDestinationSlugRouteImport } from './routes/visa.$passportSlug.$destinationSlug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -27,98 +27,101 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoStoreRoute = DemoStoreRouteImport.update({
-  id: '/demo/store',
-  path: '/demo/store',
+const DestinationsDestinationSlugRoute =
+  DestinationsDestinationSlugRouteImport.update({
+    id: '/destinations/$destinationSlug',
+    path: '/destinations/$destinationSlug',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ExplorePassportSlugRoute = ExplorePassportSlugRouteImport.update({
+  id: '/explore/$passportSlug',
+  path: '/explore/$passportSlug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoTableRoute = DemoTableRouteImport.update({
-  id: '/demo/table',
-  path: '/demo/table',
+const PassportsPassportSlugRoute = PassportsPassportSlugRouteImport.update({
+  id: '/passports/$passportSlug',
+  path: '/passports/$passportSlug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
-  id: '/demo/tanstack-query',
-  path: '/demo/tanstack-query',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoFormAddressRoute = DemoFormAddressRouteImport.update({
-  id: '/demo/form/address',
-  path: '/demo/form/address',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoFormSimpleRoute = DemoFormSimpleRouteImport.update({
-  id: '/demo/form/simple',
-  path: '/demo/form/simple',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const CompareFirstPassportSlugSecondPassportSlugRoute =
+  CompareFirstPassportSlugSecondPassportSlugRouteImport.update({
+    id: '/compare/$firstPassportSlug/$secondPassportSlug',
+    path: '/compare/$firstPassportSlug/$secondPassportSlug',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const VisaPassportSlugDestinationSlugRoute =
+  VisaPassportSlugDestinationSlugRouteImport.update({
+    id: '/visa/$passportSlug/$destinationSlug',
+    path: '/visa/$passportSlug/$destinationSlug',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/demo/store': typeof DemoStoreRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
+  '/destinations/$destinationSlug': typeof DestinationsDestinationSlugRoute
+  '/explore/$passportSlug': typeof ExplorePassportSlugRoute
+  '/passports/$passportSlug': typeof PassportsPassportSlugRoute
+  '/compare/$firstPassportSlug/$secondPassportSlug': typeof CompareFirstPassportSlugSecondPassportSlugRoute
+  '/visa/$passportSlug/$destinationSlug': typeof VisaPassportSlugDestinationSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/demo/store': typeof DemoStoreRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
+  '/destinations/$destinationSlug': typeof DestinationsDestinationSlugRoute
+  '/explore/$passportSlug': typeof ExplorePassportSlugRoute
+  '/passports/$passportSlug': typeof PassportsPassportSlugRoute
+  '/compare/$firstPassportSlug/$secondPassportSlug': typeof CompareFirstPassportSlugSecondPassportSlugRoute
+  '/visa/$passportSlug/$destinationSlug': typeof VisaPassportSlugDestinationSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/demo/store': typeof DemoStoreRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
+  '/destinations/$destinationSlug': typeof DestinationsDestinationSlugRoute
+  '/explore/$passportSlug': typeof ExplorePassportSlugRoute
+  '/passports/$passportSlug': typeof PassportsPassportSlugRoute
+  '/compare/$firstPassportSlug/$secondPassportSlug': typeof CompareFirstPassportSlugSecondPassportSlugRoute
+  '/visa/$passportSlug/$destinationSlug': typeof VisaPassportSlugDestinationSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
-    | '/demo/store'
-    | '/demo/table'
-    | '/demo/tanstack-query'
-    | '/demo/form/address'
-    | '/demo/form/simple'
+    | '/destinations/$destinationSlug'
+    | '/explore/$passportSlug'
+    | '/passports/$passportSlug'
+    | '/compare/$firstPassportSlug/$secondPassportSlug'
+    | '/visa/$passportSlug/$destinationSlug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/demo/store'
-    | '/demo/table'
-    | '/demo/tanstack-query'
-    | '/demo/form/address'
-    | '/demo/form/simple'
+    | '/destinations/$destinationSlug'
+    | '/explore/$passportSlug'
+    | '/passports/$passportSlug'
+    | '/compare/$firstPassportSlug/$secondPassportSlug'
+    | '/visa/$passportSlug/$destinationSlug'
   id:
     | '__root__'
     | '/'
     | '/about'
-    | '/demo/store'
-    | '/demo/table'
-    | '/demo/tanstack-query'
-    | '/demo/form/address'
-    | '/demo/form/simple'
+    | '/destinations/$destinationSlug'
+    | '/explore/$passportSlug'
+    | '/passports/$passportSlug'
+    | '/compare/$firstPassportSlug/$secondPassportSlug'
+    | '/visa/$passportSlug/$destinationSlug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  DemoStoreRoute: typeof DemoStoreRoute
-  DemoTableRoute: typeof DemoTableRoute
-  DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
-  DemoFormAddressRoute: typeof DemoFormAddressRoute
-  DemoFormSimpleRoute: typeof DemoFormSimpleRoute
+  DestinationsDestinationSlugRoute: typeof DestinationsDestinationSlugRoute
+  ExplorePassportSlugRoute: typeof ExplorePassportSlugRoute
+  PassportsPassportSlugRoute: typeof PassportsPassportSlugRoute
+  CompareFirstPassportSlugSecondPassportSlugRoute: typeof CompareFirstPassportSlugSecondPassportSlugRoute
+  VisaPassportSlugDestinationSlugRoute: typeof VisaPassportSlugDestinationSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -137,39 +140,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/store': {
-      id: '/demo/store'
-      path: '/demo/store'
-      fullPath: '/demo/store'
-      preLoaderRoute: typeof DemoStoreRouteImport
+    '/destinations/$destinationSlug': {
+      id: '/destinations/$destinationSlug'
+      path: '/destinations/$destinationSlug'
+      fullPath: '/destinations/$destinationSlug'
+      preLoaderRoute: typeof DestinationsDestinationSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/table': {
-      id: '/demo/table'
-      path: '/demo/table'
-      fullPath: '/demo/table'
-      preLoaderRoute: typeof DemoTableRouteImport
+    '/explore/$passportSlug': {
+      id: '/explore/$passportSlug'
+      path: '/explore/$passportSlug'
+      fullPath: '/explore/$passportSlug'
+      preLoaderRoute: typeof ExplorePassportSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/tanstack-query': {
-      id: '/demo/tanstack-query'
-      path: '/demo/tanstack-query'
-      fullPath: '/demo/tanstack-query'
-      preLoaderRoute: typeof DemoTanstackQueryRouteImport
+    '/passports/$passportSlug': {
+      id: '/passports/$passportSlug'
+      path: '/passports/$passportSlug'
+      fullPath: '/passports/$passportSlug'
+      preLoaderRoute: typeof PassportsPassportSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/form/address': {
-      id: '/demo/form/address'
-      path: '/demo/form/address'
-      fullPath: '/demo/form/address'
-      preLoaderRoute: typeof DemoFormAddressRouteImport
+    '/compare/$firstPassportSlug/$secondPassportSlug': {
+      id: '/compare/$firstPassportSlug/$secondPassportSlug'
+      path: '/compare/$firstPassportSlug/$secondPassportSlug'
+      fullPath: '/compare/$firstPassportSlug/$secondPassportSlug'
+      preLoaderRoute: typeof CompareFirstPassportSlugSecondPassportSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/form/simple': {
-      id: '/demo/form/simple'
-      path: '/demo/form/simple'
-      fullPath: '/demo/form/simple'
-      preLoaderRoute: typeof DemoFormSimpleRouteImport
+    '/visa/$passportSlug/$destinationSlug': {
+      id: '/visa/$passportSlug/$destinationSlug'
+      path: '/visa/$passportSlug/$destinationSlug'
+      fullPath: '/visa/$passportSlug/$destinationSlug'
+      preLoaderRoute: typeof VisaPassportSlugDestinationSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -178,12 +181,22 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  DemoStoreRoute: DemoStoreRoute,
-  DemoTableRoute: DemoTableRoute,
-  DemoTanstackQueryRoute: DemoTanstackQueryRoute,
-  DemoFormAddressRoute: DemoFormAddressRoute,
-  DemoFormSimpleRoute: DemoFormSimpleRoute,
+  DestinationsDestinationSlugRoute: DestinationsDestinationSlugRoute,
+  ExplorePassportSlugRoute: ExplorePassportSlugRoute,
+  PassportsPassportSlugRoute: PassportsPassportSlugRoute,
+  CompareFirstPassportSlugSecondPassportSlugRoute:
+    CompareFirstPassportSlugSecondPassportSlugRoute,
+  VisaPassportSlugDestinationSlugRoute: VisaPassportSlugDestinationSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

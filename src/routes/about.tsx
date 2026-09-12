@@ -1,23 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { ShieldCheck } from 'lucide-react'
 
-export const Route = createFileRoute('/about')({
-  component: About,
-})
+export const Route = createFileRoute('/about')({ component: AboutPage })
 
-function About() {
-  return (
-    <main className="page-wrap px-4 py-12">
-      <section className="island-shell rounded-2xl p-6 sm:p-8">
-        <p className="island-kicker mb-2">About</p>
-        <h1 className="display-title mb-3 text-4xl font-bold text-[var(--sea-ink)] sm:text-5xl">
-          A small starter with room to grow.
-        </h1>
-        <p className="m-0 max-w-3xl text-base leading-8 text-[var(--sea-ink-soft)]">
-          TanStack Start gives you type-safe routing, server functions, and
-          modern SSR defaults. Use this as a clean foundation, then layer in
-          your own routes, styling, and add-ons.
-        </p>
-      </section>
-    </main>
-  )
+function AboutPage() {
+  return <main className="page-shell inner-page prose-page"><p className="script-kicker">Methodology</p><h1>Useful intelligence, honest limits.</h1><p>Travel Intelligence turns provider responses into a consistent product model without hiding uncertainty. Visa categories remain distinct, unknown values stay unknown, and missing fields are never presented as known facts.</p><section><ShieldCheck /><div><h2>What to expect</h2><p>Requirements are organized around a passport and destination. Where available, we show allowed stay, documents, process, provenance, and freshness. Every consequential result should still be checked with the relevant immigration authority before travel.</p></div></section></main>
 }

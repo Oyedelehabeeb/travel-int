@@ -3,7 +3,9 @@ import { z } from 'zod'
 
 export const env = createEnv({
   server: {
+    ORIZN_API_KEY: z.string().min(1).optional(),
     SERVER_URL: z.string().url().optional(),
+    TRAVEL_DATA_PROVIDER: z.enum(['fixture', 'orizn']).default('fixture'),
   },
 
   /**
@@ -13,7 +15,7 @@ export const env = createEnv({
   clientPrefix: 'VITE_',
 
   client: {
-    VITE_APP_TITLE: z.string().min(1).optional(),
+    VITE_APP_TITLE: z.string().min(1).default('Travel Intelligence'),
   },
 
   /**

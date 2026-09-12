@@ -3,20 +3,33 @@ import {
   AlertTriangle,
   ArrowLeft,
   ArrowRight,
+  CalendarClock,
   Check,
   Clock3,
   ExternalLink,
   FileText,
+  HeartPulse,
+  Info,
+  Landmark,
+  Plane,
   ShieldCheck,
 } from 'lucide-react'
 import { AccessStatus } from '#/components/AccessStatus'
 import { DataSourceNotice } from '#/components/DataSourceNotice'
 import type { IntelligenceField } from '#/domain/travel'
 import { getVisaIntelligence } from '#/server/travel-intelligence/functions'
+import {
+  TravelDataErrorState,
+  TravelDataPending,
+} from '#/components/TravelDataState'
 
 export const Route = createFileRoute('/visa/$passportSlug/$destinationSlug')({
   loader: ({ params }) => getVisaIntelligence({ data: params }),
   component: VisaPage,
+  pendingComponent: TravelDataPending,
+  errorComponent: ({ error, reset }) => (
+    <TravelDataErrorState error={error} onRetry={reset} />
+  ),
   head: ({ loaderData }) => ({
     meta: [
       {
@@ -27,23 +40,59 @@ export const Route = createFileRoute('/visa/$passportSlug/$destinationSlug')({
 })
 
 function FieldNotice({ field }: { field: IntelligenceField<unknown> }) {
-  if (field.status === 'available') return null
+  if (field.status === 'available' && !field.note) return null
   return (
     <p className={`field-notice notice-${field.status}`}>
-      <AlertTriangle />
+      {field.status === 'available' ? <Info /> : <AlertTriangle />}
       {field.note ?? 'This information is not currently available.'}
     </p>
   )
 }
 
+function ScalarFact({
+  label,
+  field,
+}: {
+  label: string
+  field: IntelligenceField<string | number>
+}) {
+  return (
+    <div className="visa-fact">
+      <dt>{label}</dt>
+      <dd>{field.value ?? 'Not available'}</dd>
+      <FieldNotice field={field} />
+    </div>
+  )
+}
+
+function ListFact({
+  label,
+  field,
+}: {
+  label: string
+  field: IntelligenceField<string[]>
+}) {
+  return (
+    <div className="visa-fact list-fact">
+      <dt>{label}</dt>
+      <FieldNotice field={field} />
+      {field.value?.length ? (
+        <dd>
+          <ul>
+            {field.value.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </dd>
+      ) : null}
+    </div>
+  )
+}
+
 function VisaPage() {
   const visa = Route.useLoaderData()
-  const provider =
-    visa.provenance.source === 'development fixture' ? 'fixture' : 'orizn'
+  const provider = visa.provider
   const hasPassportPreview = visa.passport.fixturePassportCoverage
-  const duplicateHealthNotice =
-    visa.health.status === visa.insurance.status &&
-    visa.health.note === visa.insurance.note
   return (
     <main className="page-shell inner-page visa-page">
       {hasPassportPreview ? (
@@ -84,7 +133,9 @@ function VisaPage() {
           <Clock3 />
           <span>Typical allowance</span>
           <strong>
-            {visa.stayDays ? `${visa.stayDays} days` : 'Confirm with authority'}
+            {visa.stayDays
+              ? `${visa.stayDays} days`
+              : (visa.maximumStay.value ?? 'Confirm with authority')}
           </strong>
         </div>
       </header>
@@ -132,30 +183,66 @@ function VisaPage() {
               )}
             </div>
           </section>
-          <section className="detail-grid">
-            <article>
-              <h3>Passport validity</h3>
-              <FieldNotice field={visa.passportValidityMonths} />
-              {visa.passportValidityMonths.value && (
-                <strong>{visa.passportValidityMonths.value} months</strong>
-              )}
-            </article>
-            <article>
-              <h3>Visa fees</h3>
-              <FieldNotice field={visa.fees} />
-              {visa.fees.value && <strong>{visa.fees.value}</strong>}
-            </article>
-            <article>
-              <h3>Transit</h3>
-              <FieldNotice field={visa.transit} />
-            </article>
-            <article>
-              <h3>Health & insurance</h3>
-              <FieldNotice field={visa.health} />
-              {!duplicateHealthNotice ? (
-                <FieldNotice field={visa.insurance} />
-              ) : null}
-            </article>
+          <section className="intelligence-section">
+            <div className="section-icon">
+              <CalendarClock />
+            </div>
+            <div>
+              <p className="eyebrow">Timing</p>
+              <h2>Validity and processing</h2>
+              <dl className="visa-facts">
+                <ScalarFact
+                  label="Processing time"
+                  field={visa.processingTime}
+                />
+                <ScalarFact label="Visa validity" field={visa.validity} />
+                <ScalarFact label="Maximum stay" field={visa.maximumStay} />
+                <ScalarFact
+                  label="Passport validity"
+                  field={
+                    visa.passportValidityMonths.status === 'available'
+                      ? {
+                          ...visa.passportValidityMonths,
+                          value: `${visa.passportValidityMonths.value} months`,
+                        }
+                      : visa.passportValidityMonths
+                  }
+                />
+                <ScalarFact
+                  label="Best time to apply"
+                  field={visa.bestApplyPeriod}
+                />
+              </dl>
+            </div>
+          </section>
+          <section className="intelligence-section">
+            <div className="section-icon">
+              <Plane />
+            </div>
+            <div>
+              <p className="eyebrow">Conditions</p>
+              <h2>Travel and application details</h2>
+              <dl className="visa-facts">
+                <ScalarFact label="Fees" field={visa.fees} />
+                <ScalarFact label="Transit" field={visa.transit} />
+                <ScalarFact label="Insurance" field={visa.insurance} />
+                <ScalarFact label="Extensions" field={visa.extension} />
+                <ListFact label="Entry by mode" field={visa.entryByMode} />
+              </dl>
+            </div>
+          </section>
+          <section className="intelligence-section">
+            <div className="section-icon">
+              <HeartPulse />
+            </div>
+            <div>
+              <p className="eyebrow">Health and support</p>
+              <h2>Before you depart</h2>
+              <dl className="visa-facts">
+                <ListFact label="Health requirements" field={visa.health} />
+                <ListFact label="Embassy information" field={visa.embassy} />
+              </dl>
+            </div>
           </section>
         </div>
         <aside className="trust-panel">
@@ -175,6 +262,30 @@ function VisaPage() {
                 ? 'This illustrative record is not verified travel advice.'
                 : 'The Orizn response did not include a directly citable official source.'}
           </p>
+          {visa.safety.status === 'available' && visa.safety.value ? (
+            <div className="safety-summary">
+              <Landmark />
+              <div>
+                <span>
+                  Travel advisory
+                  {visa.safety.value.level
+                    ? ` · level ${visa.safety.value.level}`
+                    : ''}
+                </span>
+                <strong>{visa.safety.value.advisory}</strong>
+                {visa.safety.value.source ? (
+                  <small>
+                    {visa.safety.value.source}
+                    {visa.safety.value.updatedAt
+                      ? ` · updated ${visa.safety.value.updatedAt}`
+                      : ''}
+                  </small>
+                ) : null}
+              </div>
+            </div>
+          ) : (
+            <FieldNotice field={visa.safety} />
+          )}
           {visa.provenance.lastVerifiedAt && (
             <dl>
               <dt>Last verified</dt>

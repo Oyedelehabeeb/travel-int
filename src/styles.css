@@ -1725,6 +1725,149 @@ a.country-card:hover {
   min-width: 16px;
   color: var(--amber);
 }
+.notice-plan_gated {
+  color: var(--amber);
+}
+.notice-available svg {
+  color: var(--sky-deep);
+}
+.visa-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+.visa-fact {
+  min-width: 0;
+  padding: 18px 18px 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+.visa-fact:nth-child(even) {
+  padding-left: 18px;
+  border-left: 1px solid var(--line);
+}
+.visa-fact dt {
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.visa-fact dd {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 700;
+  line-height: 1.45;
+}
+.visa-fact ul {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.safety-summary {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.17);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.08);
+}
+.safety-summary > svg {
+  width: 19px;
+  min-width: 19px;
+  color: #a9e0f2;
+}
+.safety-summary div {
+  display: grid;
+  gap: 4px;
+}
+.safety-summary span,
+.safety-summary small {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.72rem;
+}
+.safety-summary strong {
+  line-height: 1.35;
+}
+.data-state-page {
+  display: grid;
+  min-height: 65vh;
+  place-items: center;
+}
+.data-state-card {
+  width: min(100%, 680px);
+  padding: clamp(32px, 6vw, 64px);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: var(--surface-solid);
+  box-shadow: var(--shadow);
+}
+.data-state-card > svg {
+  width: 38px;
+  height: 38px;
+  color: var(--amber);
+}
+.data-state-card h1 {
+  margin: 8px 0 12px;
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  letter-spacing: -0.055em;
+}
+.data-state-card > p:last-of-type {
+  color: var(--muted);
+  line-height: 1.65;
+}
+.data-state-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+.data-state-actions button,
+.data-state-actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--ink);
+  background: transparent;
+  font-weight: 700;
+}
+.data-state-actions button {
+  border-color: var(--sky-deep);
+  color: white;
+  background: var(--sky-deep);
+}
+.data-state-actions svg {
+  width: 16px;
+}
+.loading-orbit {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 28px;
+  border: 2px solid var(--line);
+  border-top-color: var(--sky-deep);
+  border-radius: 50%;
+  animation: loading-spin 0.9s linear infinite;
+}
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loading-orbit {
+    animation: none;
+  }
+}
 .trust-panel {
   position: sticky;
   top: 100px;
@@ -2296,6 +2439,13 @@ a.country-card:hover {
   }
   .detail-grid {
     grid-template-columns: 1fr;
+  }
+  .visa-facts {
+    grid-template-columns: 1fr;
+  }
+  .visa-fact:nth-child(even) {
+    padding-left: 0;
+    border-left: 0;
   }
   .detail-grid article {
     border-right: 0;

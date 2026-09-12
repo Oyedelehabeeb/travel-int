@@ -194,10 +194,18 @@ export function fixtureVisa(
       passportValidityMonths: { status: 'unavailable' },
       documents: { status: 'unavailable' },
       process: { status: 'unavailable' },
+      processingTime: { status: 'unavailable' },
+      validity: { status: 'unavailable' },
+      maximumStay: { status: 'unavailable' },
       fees: { status: 'unavailable' },
       transit: { status: 'unavailable' },
       health: { status: 'unavailable' },
       insurance: { status: 'unavailable' },
+      extension: { status: 'unavailable' },
+      embassy: { status: 'unavailable' },
+      entryByMode: { status: 'unavailable' },
+      safety: { status: 'unavailable' },
+      bestApplyPeriod: { status: 'unavailable' },
       tips: [
         'Select a fixture-supported passport and destination, or connect Orizn for live coverage.',
       ],
@@ -207,6 +215,7 @@ export function fixtureVisa(
         sourceUrl: null,
         lastVerifiedAt: null,
       },
+      provider: 'fixture',
     }
   }
 
@@ -247,6 +256,18 @@ export function fixtureVisa(
               'Carry supporting travel documents',
             ],
           },
+    processingTime: {
+      status: 'available',
+      value:
+        accessClassification.category === 'visa_required'
+          ? '5–10 business days'
+          : 'Not applicable for this preview',
+    },
+    validity: { status: 'unavailable' },
+    maximumStay:
+      access.stayDays === null
+        ? { status: 'unavailable' }
+        : { status: 'available', value: `Up to ${access.stayDays} days` },
     fees: {
       status: 'plan_gated',
       note: 'Fee information is not available in this development fixture.',
@@ -263,6 +284,26 @@ export function fixtureVisa(
       status: 'unavailable',
       note: 'No verified insurance requirement was supplied.',
     },
+    extension: {
+      status: 'unavailable',
+      note: 'No verified extension information was supplied.',
+    },
+    embassy: {
+      status: 'unavailable',
+      note: 'No verified embassy information was supplied.',
+    },
+    entryByMode: {
+      status: 'unavailable',
+      note: 'No verified entry-by-mode information was supplied.',
+    },
+    safety: {
+      status: 'unavailable',
+      note: 'No verified safety advisory was supplied.',
+    },
+    bestApplyPeriod: {
+      status: 'unavailable',
+      note: 'No verified application timing was supplied.',
+    },
     tips: [
       'Check requirements again shortly before departure.',
       'Keep copies of supporting documents accessible while travelling.',
@@ -273,5 +314,6 @@ export function fixtureVisa(
       sourceUrl: null,
       lastVerifiedAt: null,
     },
+    provider: 'fixture',
   }
 }

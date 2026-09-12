@@ -62,6 +62,89 @@ describe('mapOriznVisa', () => {
       lastVerifiedAt: null,
     })
   })
+
+  it('distinguishes live values, unavailable markers, and upgrade stubs', () => {
+    const response = oriznVisaResponseSchema.parse({
+      data: {
+        passport: 'NGA',
+        destination: 'JPN',
+        requirement: 'visa_required',
+        visa_required: true,
+        visa_free_days: null,
+        description: 'A visa is required.',
+        documents_required: ['Valid passport'],
+        process: ['Submit the application'],
+        processing_time: '5-10 business days',
+        processing_days: { upgrade: 'Available on Starter plan or above' },
+        cost: 'Free',
+        visa_fee: { upgrade: 'Available on Starter plan or above' },
+        validity: '3 months',
+        max_stay: '15-90 days',
+        passport_validity_months: 0,
+        transit_visa: { upgrade: 'Available on Starter plan or above' },
+        vaccinations_required: {
+          status: 'unavailable',
+          granularity: 'destination',
+        },
+        health_requirements: {
+          upgrade: 'Available on Starter plan or above',
+        },
+        insurance_required: {
+          upgrade: 'Available on Starter plan or above',
+        },
+        extension: { possible: true, details: 'Extension possible in Japan.' },
+        extension_rules: {
+          upgrade: 'Available on Starter plan or above',
+        },
+        embassy: { upgrade: 'Embassy info requires Pro plan or above' },
+        entry_by_mode: { upgrade: 'Available on Starter plan or above' },
+        safety: {
+          level: 1,
+          advisory: 'Exercise Normal Precautions',
+          source: 'US State Dept',
+          updated_at: '2025-10-01',
+        },
+        best_apply_period: {
+          upgrade: 'Available on Starter plan or above',
+        },
+        country_info: {},
+        verified: false,
+        source: 'manual',
+        source_url: null,
+        last_verified_at: null,
+        requirement_status: null,
+        requirement_status_note: null,
+      },
+      meta: { lang: 'en', api_version: '1.1' },
+    })
+
+    const mapped = mapOriznVisa(response)
+    expect(mapped.processingTime).toEqual({
+      status: 'available',
+      value: '5-10 business days',
+    })
+    expect(mapped.fees).toMatchObject({ status: 'available', value: 'Free' })
+    expect(mapped.transit.status).toBe('plan_gated')
+    expect(mapped.health.status).toBe('plan_gated')
+    expect(mapped.insurance.status).toBe('plan_gated')
+    expect(mapped.embassy.status).toBe('plan_gated')
+    expect(mapped.bestApplyPeriod.status).toBe('plan_gated')
+    expect(mapped.passportValidityMonths.status).toBe('unavailable')
+    expect(mapped.extension).toMatchObject({
+      status: 'available',
+      value: 'Extension possible in Japan.',
+    })
+    expect(mapped.safety).toEqual({
+      status: 'available',
+      value: {
+        level: 1,
+        advisory: 'Exercise Normal Precautions',
+        source: 'US State Dept',
+        updatedAt: '2025-10-01',
+      },
+    })
+    expect(mapped.provider).toBe('orizn')
+  })
 })
 
 describe('Orizn aggregate mapping', () => {

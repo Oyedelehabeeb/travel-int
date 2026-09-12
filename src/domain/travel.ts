@@ -90,6 +90,13 @@ export interface DataProvenance {
   lastVerifiedAt: string | null
 }
 
+export interface SafetyInformation {
+  level: number | null
+  advisory: string
+  source: string | null
+  updatedAt: string | null
+}
+
 export interface VisaIntelligence {
   passport: Country
   destination: Country
@@ -99,12 +106,21 @@ export interface VisaIntelligence {
   passportValidityMonths: IntelligenceField<number>
   documents: IntelligenceField<string[]>
   process: IntelligenceField<string[]>
+  processingTime: IntelligenceField<string>
+  validity: IntelligenceField<string>
+  maximumStay: IntelligenceField<string>
   fees: IntelligenceField<string>
   transit: IntelligenceField<string>
   health: IntelligenceField<string[]>
   insurance: IntelligenceField<string>
+  extension: IntelligenceField<string>
+  embassy: IntelligenceField<string[]>
+  entryByMode: IntelligenceField<string[]>
+  safety: IntelligenceField<SafetyInformation>
+  bestApplyPeriod: IntelligenceField<string>
   tips: string[]
   provenance: DataProvenance
+  provider: 'fixture' | 'orizn'
 }
 
 export interface PassportComparison {

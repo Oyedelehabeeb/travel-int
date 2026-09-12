@@ -1,10 +1,19 @@
 import { useNavigate } from '@tanstack/react-router'
 import { ArrowRightLeft } from 'lucide-react'
-import { useState } from 'react'
+import { useId, useState } from 'react'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '#/components/ui/select'
 import { fixturePassportCountries } from '#/data/countries'
 
 export function ComparisonSelector() {
   const navigate = useNavigate()
+  const firstId = useId()
+  const secondId = useId()
   const [firstPassportSlug, setFirstPassportSlug] = useState('')
   const [secondPassportSlug, setSecondPassportSlug] = useState('')
   const canCompare =
@@ -27,38 +36,45 @@ export function ComparisonSelector() {
         })
       }}
     >
-      <label>
-        First passport
-        <select
-          required
-          value={firstPassportSlug}
-          onChange={(event) => setFirstPassportSlug(event.target.value)}
-        >
-          <option value="">Choose a passport</option>
-          {fixturePassportCountries.map((country) => (
-            <option key={country.code} value={country.slug}>
-              {country.flag} {country.name}
-            </option>
-          ))}
-        </select>
-      </label>
+      <div className="comparison-field">
+        <label htmlFor={firstId}>First passport</label>
+        <Select value={firstPassportSlug} onValueChange={setFirstPassportSlug}>
+          <SelectTrigger id={firstId} className="comparison-select-trigger">
+            <SelectValue placeholder="Choose a passport" />
+          </SelectTrigger>
+          <SelectContent position="popper" className="travel-select-content">
+            {fixturePassportCountries.map((country) => (
+              <SelectItem key={country.code} value={country.slug}>
+                {country.flag} {country.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
       <ArrowRightLeft aria-hidden="true" />
-      <label>
-        Second passport
-        <select
-          required
+      <div className="comparison-field">
+        <label htmlFor={secondId}>Second passport</label>
+        <Select
           value={secondPassportSlug}
-          onChange={(event) => setSecondPassportSlug(event.target.value)}
+          onValueChange={setSecondPassportSlug}
         >
-          <option value="">Choose a passport</option>
-          {fixturePassportCountries.map((country) => (
-            <option key={country.code} value={country.slug}>
-              {country.flag} {country.name}
-            </option>
-          ))}
-        </select>
-      </label>
-      <button type="submit" disabled={!canCompare}>
+          <SelectTrigger id={secondId} className="comparison-select-trigger">
+            <SelectValue placeholder="Choose a passport" />
+          </SelectTrigger>
+          <SelectContent position="popper" className="travel-select-content">
+            {fixturePassportCountries.map((country) => (
+              <SelectItem key={country.code} value={country.slug}>
+                {country.flag} {country.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <button
+        type="submit"
+        className="comparison-submit"
+        disabled={!canCompare}
+      >
         Compare access
       </button>
       {firstPassportSlug && firstPassportSlug === secondPassportSlug ? (

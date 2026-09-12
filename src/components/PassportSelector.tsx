@@ -1,7 +1,14 @@
 import { useNavigate } from '@tanstack/react-router'
 import { ArrowRight } from 'lucide-react'
 import { useEffect, useId, useState } from 'react'
-import { passportCountries } from '#/data/countries'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '#/components/ui/select'
+import { fixturePassportCountries } from '#/data/countries'
 
 const savedPassportKey = 'travel-intelligence:passport'
 
@@ -16,16 +23,12 @@ export function PassportSelector({
   const inputId = useId()
   const [passportSlug, setPassportSlug] = useState('')
 
-  const canUsePassport = (slug: string) => {
-    const country = passportCountries.find((item) => item.slug === slug)
-    return Boolean(
-      country && (destinationSlug || country.fixturePassportCoverage),
-    )
-  }
-
   useEffect(() => {
     const savedPassport = window.localStorage.getItem(savedPassportKey)
-    if (savedPassport && canUsePassport(savedPassport)) {
+    if (
+      savedPassport &&
+      fixturePassportCountries.some((country) => country.slug === savedPassport)
+    ) {
       setPassportSlug(savedPassport)
     }
   }, [destinationSlug])
@@ -54,34 +57,32 @@ export function PassportSelector({
         Passport
         <span>
           {destinationSlug
-            ? 'Choose any passport; unavailable coverage is shown honestly'
-            : 'Preview access is currently available for six passports'}
+            ? 'Choose a passport available in this preview'
+            : 'Six passport previews available'}
         </span>
       </label>
       <div className="passport-control">
-        <select
-          id={inputId}
-          value={passportSlug}
-          required
-          onChange={(event) => setPassportSlug(event.target.value)}
-        >
-          <option value="">Choose your passport</option>
-          {passportCountries.map((country) => {
-            const unavailable =
-              !destinationSlug && !country.fixturePassportCoverage
-            return (
-              <option
-                key={country.code}
-                value={country.slug}
-                disabled={unavailable}
-              >
+        <Select value={passportSlug} onValueChange={setPassportSlug}>
+          <SelectTrigger id={inputId} className="passport-select-trigger">
+            <SelectValue placeholder="Choose your passport" />
+          </SelectTrigger>
+          <SelectContent
+            position="popper"
+            align="start"
+            className="travel-select-content"
+          >
+            {fixturePassportCountries.map((country) => (
+              <SelectItem key={country.code} value={country.slug}>
                 {country.flag} {country.name}
-                {unavailable ? ' — preview pending' : ''}
-              </option>
-            )
-          })}
-        </select>
-        <button type="submit" disabled={!passportSlug}>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <button
+          type="submit"
+          className="passport-submit"
+          disabled={!passportSlug}
+        >
           {destinationSlug ? 'Check requirement' : 'Explore access'}
           <ArrowRight aria-hidden="true" />
         </button>

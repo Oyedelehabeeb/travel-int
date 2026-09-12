@@ -1,7 +1,14 @@
 import { Link } from '@tanstack/react-router'
 import { CheckCircle2, Search } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { catalogueContinents, countries } from '#/data/countries'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '#/components/ui/select'
+import { countries, fixturePassportCountries } from '#/data/countries'
 
 export function CountryDirectory({
   kind,
@@ -11,9 +18,15 @@ export function CountryDirectory({
   const [query, setQuery] = useState('')
   const [continent, setContinent] = useState('all')
   const [showAll, setShowAll] = useState(false)
+  const sourceCountries =
+    kind === 'passport' ? fixturePassportCountries : countries
+  const continents = useMemo(
+    () => [...new Set(sourceCountries.map((country) => country.continent))],
+    [sourceCountries],
+  )
   const matches = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase()
-    return countries.filter((country) => {
+    return sourceCountries.filter((country) => {
       const matchesContinent =
         continent === 'all' || country.continent === continent
       const matchesQuery =
@@ -23,7 +36,7 @@ export function CountryDirectory({
           .includes(normalizedQuery)
       return matchesContinent && matchesQuery
     })
-  }, [continent, query])
+  }, [continent, query, sourceCountries])
   const visible =
     showAll || query || continent !== 'all' ? matches : matches.slice(0, 36)
 
@@ -40,81 +53,79 @@ export function CountryDirectory({
             onChange={(event) => setQuery(event.target.value)}
           />
         </label>
-        <label>
+        <div className="directory-select-field">
           <span className="sr-only">Filter by continent</span>
-          <select
-            value={continent}
-            onChange={(event) => setContinent(event.target.value)}
-          >
-            <option value="all">All continents</option>
-            {catalogueContinents.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </label>
+          <Select value={continent} onValueChange={setContinent}>
+            <SelectTrigger
+              aria-label="Filter by continent"
+              className="directory-select-trigger"
+            >
+              <SelectValue>
+                {continent === 'all' ? 'All continents' : continent}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent position="popper" className="travel-select-content">
+              <SelectItem value="all">All continents</SelectItem>
+              {continents.map((name) => (
+                <SelectItem key={name} value={name}>
+                  {name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
       <p className="directory-count" aria-live="polite">
-        {matches.length} catalogue {matches.length === 1 ? 'entry' : 'entries'}
+        {matches.length}{' '}
+        {kind === 'passport'
+          ? matches.length === 1
+            ? 'available passport'
+            : 'available passports'
+          : `catalogue ${matches.length === 1 ? 'entry' : 'entries'}`}
       </p>
       {visible.length ? (
         <div className="country-directory">
           {visible.map((country) => {
-          const hasPreview =
-            kind === 'passport'
-              ? country.fixturePassportCoverage
-              : country.fixtureDestinationCoverage
-          const content = (
-            <>
-              <span className="country-card-flag">{country.flag}</span>
-              <span className="country-card-copy">
-                <strong>{country.name}</strong>
-                <small>
-                  {country.continent} · {country.code}
-                </small>
-              </span>
-              <span
-                className={
-                  hasPreview ? 'coverage-badge available' : 'coverage-badge'
-                }
+            const hasPreview =
+              kind === 'passport' || country.fixtureDestinationCoverage
+            const content = (
+              <>
+                <span className="country-card-flag">{country.flag}</span>
+                <span className="country-card-copy">
+                  <strong>{country.name}</strong>
+                  <small>
+                    {country.continent} · {country.code}
+                  </small>
+                </span>
+                <span
+                  className={
+                    hasPreview ? 'coverage-badge available' : 'coverage-badge'
+                  }
+                >
+                  {hasPreview ? <CheckCircle2 aria-hidden="true" /> : null}
+                  {hasPreview ? 'Preview available' : 'Catalogue profile'}
+                </span>
+              </>
+            )
+            return kind === 'destination' ? (
+              <Link
+                key={country.code}
+                to="/destinations/$destinationSlug"
+                params={{ destinationSlug: country.slug }}
+                className="country-card"
               >
-                {hasPreview ? <CheckCircle2 aria-hidden="true" /> : null}
-                {hasPreview
-                  ? 'Preview available'
-                  : kind === 'destination'
-                    ? 'Catalogue profile'
-                    : 'Coverage pending'}
-              </span>
-            </>
-          )
-          return kind === 'destination' ? (
-            <Link
-              key={country.code}
-              to="/destinations/$destinationSlug"
-              params={{ destinationSlug: country.slug }}
-              className="country-card"
-            >
-              {content}
-            </Link>
-          ) : hasPreview ? (
-            <Link
-              key={country.code}
-              to="/passports/$passportSlug"
-              params={{ passportSlug: country.slug }}
-              className="country-card"
-            >
-              {content}
-            </Link>
-          ) : (
-            <div
-              key={country.code}
-              className="country-card is-pending"
-              aria-disabled="true"
-            >
-              {content}
-            </div>
-          )
+                {content}
+              </Link>
+            ) : (
+              <Link
+                key={country.code}
+                to="/passports/$passportSlug"
+                params={{ passportSlug: country.slug }}
+                className="country-card"
+              >
+                {content}
+              </Link>
+            )
           })}
         </div>
       ) : (

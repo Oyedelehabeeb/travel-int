@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { CountryDirectory } from '#/components/CountryDirectory'
 import { DataSourceNotice } from '#/components/DataSourceNotice'
-import { countries, fixturePassportCountries } from '#/data/countries'
+import { fixturePassportCountries } from '#/data/countries'
 
 export const Route = createFileRoute('/passports/')({
   component: PassportDirectoryPage,
@@ -17,9 +17,8 @@ function PassportDirectoryPage() {
         <p className="script-kicker">Passport directory</p>
         <h1>Every passport starts with a country.</h1>
         <p>
-          Browse {countries.length} catalogue entries. Preview mobility data is
-          currently available for {fixturePassportCountries.length}; Orizn
-          support remains unverified until the live provider is connected.
+          Browse the {fixturePassportCountries.length} passports with complete
+          mobility previews in the current development dataset.
         </p>
       </header>
       <DataSourceNotice provider="fixture" />

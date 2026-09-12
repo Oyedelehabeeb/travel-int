@@ -128,13 +128,9 @@ export const countries: Country[] = getCountryDataList()
   })
   .sort((a, b) => a.name.localeCompare(b.name))
 
-export const passportCountries = countries
 export const fixturePassportCountries = countries.filter(
   (country) => country.fixturePassportCoverage,
 )
-export const catalogueContinents = [
-  ...new Set(countries.map((country) => country.continent)),
-]
 
 export function getCountryBySlug(slug: string) {
   return countries.find((country) => country.slug === slug)

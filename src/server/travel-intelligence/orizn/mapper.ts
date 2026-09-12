@@ -55,7 +55,10 @@ export function mapOriznVisa(response: OriznVisaResponse): VisaIntelligence {
   const passport = getCountryByCode(data.passport)
   const destination = getCountryByCode(data.destination)
   if (!passport || !destination) {
-    throw new TravelDataError('unsupported_country', 'Orizn returned an unsupported country code.')
+    throw new TravelDataError(
+      'unsupported_country',
+      'Orizn returned an unsupported country code.',
+    )
   }
 
   return {
@@ -64,15 +67,34 @@ export function mapOriznVisa(response: OriznVisaResponse): VisaIntelligence {
     classification: normalizeRequirement(data.requirement),
     stayDays: data.visa_free_days ?? null,
     description: data.description,
-    passportValidityMonths: data.passport_validity_months === undefined
-      ? { status: 'unavailable' }
-      : { status: 'available', value: data.passport_validity_months },
+    passportValidityMonths:
+      data.passport_validity_months === undefined
+        ? { status: 'unavailable' }
+        : { status: 'available', value: data.passport_validity_months },
     documents: optionalArray(data.documents_required),
     process: optionalArray(data.process),
-    fees: data.visa_fee === undefined ? { status: 'unavailable' } : { status: 'available', value: 'Fee details supplied by the provider.' },
-    transit: data.transit_visa === undefined ? { status: 'unavailable' } : { status: 'uncertain', note: 'Confirm transit rules with the carrier.' },
+    fees:
+      data.visa_fee === undefined
+        ? { status: 'unavailable' }
+        : {
+            status: 'available',
+            value: 'Fee details supplied by the provider.',
+          },
+    transit:
+      data.transit_visa === undefined
+        ? { status: 'unavailable' }
+        : {
+            status: 'uncertain',
+            note: 'Confirm transit rules with the carrier.',
+          },
     health: optionalArray(data.vaccinations_required),
-    insurance: data.insurance_required === undefined ? { status: 'unavailable' } : { status: 'available', value: 'Insurance details supplied by the provider.' },
+    insurance:
+      data.insurance_required === undefined
+        ? { status: 'unavailable' }
+        : {
+            status: 'available',
+            value: 'Insurance details supplied by the provider.',
+          },
     tips: data.tips ?? [],
     provenance: {
       verified: data.verified,

@@ -10,12 +10,10 @@ export type AccessCategory =
   | 'unknown'
 
 export type FieldState =
-  | 'available'
-  | 'unavailable'
-  | 'plan_gated'
-  | 'uncertain'
+  'available' | 'unavailable' | 'plan_gated' | 'uncertain'
 
 export interface Country {
+  iso2: string
   code: string
   slug: string
   name: string
@@ -24,6 +22,9 @@ export interface Country {
   region: string
   continent: string
   description: string
+  fixturePassportCoverage: boolean
+  fixtureDestinationCoverage: boolean
+  oriznSupport: 'supported' | 'unsupported' | 'unknown'
 }
 
 export interface AccessClassification {
@@ -105,6 +106,7 @@ export interface PassportComparison {
   onlySecond: number
   both: number
   neither: number
+  provider: 'fixture' | 'orizn'
 }
 
 export type TravelDataErrorCode =

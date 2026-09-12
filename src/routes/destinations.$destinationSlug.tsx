@@ -1,5 +1,5 @@
 import { Link, notFound, createFileRoute } from '@tanstack/react-router'
-import { ArrowRight, MapPin } from 'lucide-react'
+import { ArrowLeft, MapPin } from 'lucide-react'
 import { PassportSelector } from '#/components/PassportSelector'
 import { getCountryBySlug } from '#/data/countries'
 
@@ -23,6 +23,9 @@ function DestinationPage() {
   const destination = Route.useLoaderData()
   return (
     <main className="page-shell inner-page">
+      <Link to="/destinations" className="back-link">
+        <ArrowLeft /> Back to all destinations
+      </Link>
       <header className="destination-hero">
         <div className="destination-visual">
           <span>{destination.flag}</span>
@@ -75,20 +78,13 @@ function DestinationPage() {
           </p>
         </article>
       </section>
-      <div className="route-cta">
-        <div>
-          <p className="eyebrow">Example route</p>
-          <h2>Travelling from Nigeria?</h2>
-        </div>
-        <Link
-          to="/visa/$passportSlug/$destinationSlug"
-          params={{
-            passportSlug: 'nigeria',
-            destinationSlug: destination.slug,
-          }}
-        >
-          View Nigeria → {destination.name} <ArrowRight />
-        </Link>
+      <div className="catalogue-disclosure">
+        <strong>Catalogue profile</strong>
+        <span>
+          {destination.fixtureDestinationCoverage
+            ? 'This destination has representative fixture coverage for supported preview passports.'
+            : 'No fixture intelligence is available for this destination. Selecting a passport will show an explicit unavailable-data state until live Orizn coverage is verified.'}
+        </span>
       </div>
     </main>
   )

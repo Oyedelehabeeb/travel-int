@@ -15,9 +15,12 @@ export default function ThemeToggle() {
 
   useEffect(() => {
     const stored = window.localStorage.getItem('theme')
-    const initial = stored === 'dark' || stored === 'light'
-      ? stored
-      : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    const initial =
+      stored === 'dark' || stored === 'light'
+        ? stored
+        : window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light'
     setMode(initial)
     applyTheme(initial)
   }, [])
@@ -34,7 +37,11 @@ export default function ThemeToggle() {
         window.localStorage.setItem('theme', next)
       }}
     >
-      {mode === 'light' ? <Moon aria-hidden="true" /> : <Sun aria-hidden="true" />}
+      {mode === 'light' ? (
+        <Moon aria-hidden="true" />
+      ) : (
+        <Sun aria-hidden="true" />
+      )}
     </button>
   )
 }

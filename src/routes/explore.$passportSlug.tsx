@@ -3,6 +3,7 @@ import { ArrowLeft, BarChart3, Search } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { AccessMapPreview } from '#/components/AccessMapPreview'
 import { AccessStatus } from '#/components/AccessStatus'
+import { DataSourceNotice } from '#/components/DataSourceNotice'
 import type { AccessCategory } from '#/domain/travel'
 import { getPassportAccess } from '#/server/travel-intelligence/functions'
 
@@ -72,6 +73,7 @@ function ExplorePage() {
           <small>rank #{snapshot.score.rank}</small>
         </Link>
       </header>
+      <DataSourceNotice provider={snapshot.provider} compact />
       <div className="filter-bar">
         <label>
           <Search />
@@ -99,7 +101,7 @@ function ExplorePage() {
         ))}
       </div>
       <p className="filter-result" aria-live="polite">
-        Showing {destinations.length} of {snapshot.destinations.length} fixture
+        Showing {destinations.length} of {snapshot.destinations.length} preview
         destinations
         {category || query
           ? ' · select the active filter again to clear it'
@@ -111,7 +113,7 @@ function ExplorePage() {
         <div className="section-heading">
           <div>
             <p className="eyebrow">Accessible alternative</p>
-            <h2>Browse every fixture destination</h2>
+            <h2>Browse available preview destinations</h2>
           </div>
         </div>
         <div className="destination-table">

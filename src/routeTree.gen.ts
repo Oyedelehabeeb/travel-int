@@ -11,8 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as CompareIndexRouteImport } from './routes/compare.index'
+import { Route as DestinationsIndexRouteImport } from './routes/destinations.index'
 import { Route as DestinationsDestinationSlugRouteImport } from './routes/destinations.$destinationSlug'
+import { Route as ExploreIndexRouteImport } from './routes/explore.index'
 import { Route as ExplorePassportSlugRouteImport } from './routes/explore.$passportSlug'
+import { Route as PassportsIndexRouteImport } from './routes/passports.index'
 import { Route as PassportsPassportSlugRouteImport } from './routes/passports.$passportSlug'
 import { Route as CompareFirstPassportSlugSecondPassportSlugRouteImport } from './routes/compare.$firstPassportSlug.$secondPassportSlug'
 import { Route as VisaPassportSlugDestinationSlugRouteImport } from './routes/visa.$passportSlug.$destinationSlug'
@@ -27,15 +31,35 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CompareIndexRoute = CompareIndexRouteImport.update({
+  id: '/compare/',
+  path: '/compare/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DestinationsIndexRoute = DestinationsIndexRouteImport.update({
+  id: '/destinations/',
+  path: '/destinations/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DestinationsDestinationSlugRoute =
   DestinationsDestinationSlugRouteImport.update({
     id: '/destinations/$destinationSlug',
     path: '/destinations/$destinationSlug',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ExploreIndexRoute = ExploreIndexRouteImport.update({
+  id: '/explore/',
+  path: '/explore/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExplorePassportSlugRoute = ExplorePassportSlugRouteImport.update({
   id: '/explore/$passportSlug',
   path: '/explore/$passportSlug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PassportsIndexRoute = PassportsIndexRouteImport.update({
+  id: '/passports/',
+  path: '/passports/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PassportsPassportSlugRoute = PassportsPassportSlugRouteImport.update({
@@ -62,6 +86,10 @@ export interface FileRoutesByFullPath {
   '/destinations/$destinationSlug': typeof DestinationsDestinationSlugRoute
   '/explore/$passportSlug': typeof ExplorePassportSlugRoute
   '/passports/$passportSlug': typeof PassportsPassportSlugRoute
+  '/compare/': typeof CompareIndexRoute
+  '/destinations/': typeof DestinationsIndexRoute
+  '/explore/': typeof ExploreIndexRoute
+  '/passports/': typeof PassportsIndexRoute
   '/compare/$firstPassportSlug/$secondPassportSlug': typeof CompareFirstPassportSlugSecondPassportSlugRoute
   '/visa/$passportSlug/$destinationSlug': typeof VisaPassportSlugDestinationSlugRoute
 }
@@ -71,6 +99,10 @@ export interface FileRoutesByTo {
   '/destinations/$destinationSlug': typeof DestinationsDestinationSlugRoute
   '/explore/$passportSlug': typeof ExplorePassportSlugRoute
   '/passports/$passportSlug': typeof PassportsPassportSlugRoute
+  '/compare': typeof CompareIndexRoute
+  '/destinations': typeof DestinationsIndexRoute
+  '/explore': typeof ExploreIndexRoute
+  '/passports': typeof PassportsIndexRoute
   '/compare/$firstPassportSlug/$secondPassportSlug': typeof CompareFirstPassportSlugSecondPassportSlugRoute
   '/visa/$passportSlug/$destinationSlug': typeof VisaPassportSlugDestinationSlugRoute
 }
@@ -81,6 +113,10 @@ export interface FileRoutesById {
   '/destinations/$destinationSlug': typeof DestinationsDestinationSlugRoute
   '/explore/$passportSlug': typeof ExplorePassportSlugRoute
   '/passports/$passportSlug': typeof PassportsPassportSlugRoute
+  '/compare/': typeof CompareIndexRoute
+  '/destinations/': typeof DestinationsIndexRoute
+  '/explore/': typeof ExploreIndexRoute
+  '/passports/': typeof PassportsIndexRoute
   '/compare/$firstPassportSlug/$secondPassportSlug': typeof CompareFirstPassportSlugSecondPassportSlugRoute
   '/visa/$passportSlug/$destinationSlug': typeof VisaPassportSlugDestinationSlugRoute
 }
@@ -92,6 +128,10 @@ export interface FileRouteTypes {
     | '/destinations/$destinationSlug'
     | '/explore/$passportSlug'
     | '/passports/$passportSlug'
+    | '/compare/'
+    | '/destinations/'
+    | '/explore/'
+    | '/passports/'
     | '/compare/$firstPassportSlug/$secondPassportSlug'
     | '/visa/$passportSlug/$destinationSlug'
   fileRoutesByTo: FileRoutesByTo
@@ -101,6 +141,10 @@ export interface FileRouteTypes {
     | '/destinations/$destinationSlug'
     | '/explore/$passportSlug'
     | '/passports/$passportSlug'
+    | '/compare'
+    | '/destinations'
+    | '/explore'
+    | '/passports'
     | '/compare/$firstPassportSlug/$secondPassportSlug'
     | '/visa/$passportSlug/$destinationSlug'
   id:
@@ -110,6 +154,10 @@ export interface FileRouteTypes {
     | '/destinations/$destinationSlug'
     | '/explore/$passportSlug'
     | '/passports/$passportSlug'
+    | '/compare/'
+    | '/destinations/'
+    | '/explore/'
+    | '/passports/'
     | '/compare/$firstPassportSlug/$secondPassportSlug'
     | '/visa/$passportSlug/$destinationSlug'
   fileRoutesById: FileRoutesById
@@ -120,6 +168,10 @@ export interface RootRouteChildren {
   DestinationsDestinationSlugRoute: typeof DestinationsDestinationSlugRoute
   ExplorePassportSlugRoute: typeof ExplorePassportSlugRoute
   PassportsPassportSlugRoute: typeof PassportsPassportSlugRoute
+  CompareIndexRoute: typeof CompareIndexRoute
+  DestinationsIndexRoute: typeof DestinationsIndexRoute
+  ExploreIndexRoute: typeof ExploreIndexRoute
+  PassportsIndexRoute: typeof PassportsIndexRoute
   CompareFirstPassportSlugSecondPassportSlugRoute: typeof CompareFirstPassportSlugSecondPassportSlugRoute
   VisaPassportSlugDestinationSlugRoute: typeof VisaPassportSlugDestinationSlugRoute
 }
@@ -140,6 +192,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/compare/': {
+      id: '/compare/'
+      path: '/compare'
+      fullPath: '/compare/'
+      preLoaderRoute: typeof CompareIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/destinations/': {
+      id: '/destinations/'
+      path: '/destinations'
+      fullPath: '/destinations/'
+      preLoaderRoute: typeof DestinationsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/destinations/$destinationSlug': {
       id: '/destinations/$destinationSlug'
       path: '/destinations/$destinationSlug'
@@ -147,11 +213,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DestinationsDestinationSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/': {
+      id: '/explore/'
+      path: '/explore'
+      fullPath: '/explore/'
+      preLoaderRoute: typeof ExploreIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/$passportSlug': {
       id: '/explore/$passportSlug'
       path: '/explore/$passportSlug'
       fullPath: '/explore/$passportSlug'
       preLoaderRoute: typeof ExplorePassportSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/passports/': {
+      id: '/passports/'
+      path: '/passports'
+      fullPath: '/passports/'
+      preLoaderRoute: typeof PassportsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/passports/$passportSlug': {
@@ -184,6 +264,10 @@ const rootRouteChildren: RootRouteChildren = {
   DestinationsDestinationSlugRoute: DestinationsDestinationSlugRoute,
   ExplorePassportSlugRoute: ExplorePassportSlugRoute,
   PassportsPassportSlugRoute: PassportsPassportSlugRoute,
+  CompareIndexRoute: CompareIndexRoute,
+  DestinationsIndexRoute: DestinationsIndexRoute,
+  ExploreIndexRoute: ExploreIndexRoute,
+  PassportsIndexRoute: PassportsIndexRoute,
   CompareFirstPassportSlugSecondPassportSlugRoute:
     CompareFirstPassportSlugSecondPassportSlugRoute,
   VisaPassportSlugDestinationSlugRoute: VisaPassportSlugDestinationSlugRoute,

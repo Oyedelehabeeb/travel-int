@@ -31,7 +31,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
       {
         name: 'description',
-        content: 'Understand where your passport can take you and what each destination requires.',
+        content:
+          'Understand where your passport can take you and what each destination requires.',
       },
     ],
     links: [

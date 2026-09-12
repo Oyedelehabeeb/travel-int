@@ -50,7 +50,12 @@ function destination(
 }
 
 const nigeriaDestinations = [
-  destination('GHA', 'freedom_of_movement', 90, 'Regional access may carry conditions.'),
+  destination(
+    'GHA',
+    'freedom_of_movement',
+    90,
+    'Regional access may carry conditions.',
+  ),
   destination('RWA', 'visa_on_arrival', 30),
   destination('KEN', 'eta', 90),
   destination('JPN', 'visa_required', null),
@@ -63,41 +68,93 @@ const nigeriaDestinations = [
 ]
 
 const scoreData: Partial<Record<string, Omit<PassportScore, 'passport'>>> = {
-  nigeria: { score: 427, rank: 186, totalRanked: 199, percentile: 6.5, visaFreeCount: 29 },
-  ghana: { score: 512, rank: 132, totalRanked: 199, percentile: 33.7, visaFreeCount: 47 },
-  france: { score: 892, rank: 4, totalRanked: 199, percentile: 98, visaFreeCount: 158 },
-  'united-kingdom': { score: 878, rank: 6, totalRanked: 199, percentile: 97, visaFreeCount: 154 },
-  'united-states': { score: 849, rank: 9, totalRanked: 199, percentile: 95, visaFreeCount: 150 },
-  india: { score: 486, rank: 151, totalRanked: 199, percentile: 24, visaFreeCount: 37 },
+  nigeria: {
+    score: 427,
+    rank: 186,
+    totalRanked: 199,
+    percentile: 6.5,
+    visaFreeCount: 29,
+  },
+  ghana: {
+    score: 512,
+    rank: 132,
+    totalRanked: 199,
+    percentile: 33.7,
+    visaFreeCount: 47,
+  },
+  france: {
+    score: 892,
+    rank: 4,
+    totalRanked: 199,
+    percentile: 98,
+    visaFreeCount: 158,
+  },
+  'united-kingdom': {
+    score: 878,
+    rank: 6,
+    totalRanked: 199,
+    percentile: 97,
+    visaFreeCount: 154,
+  },
+  'united-states': {
+    score: 849,
+    rank: 9,
+    totalRanked: 199,
+    percentile: 95,
+    visaFreeCount: 150,
+  },
+  india: {
+    score: 486,
+    rank: 151,
+    totalRanked: 199,
+    percentile: 24,
+    visaFreeCount: 37,
+  },
 }
 
 export function fixtureScore(passportSlug: string): PassportScore {
   const passport = getCountryBySlug(passportSlug)
   const score = scoreData[passportSlug]
   if (!passport || !score) {
-    throw new TravelDataError('unsupported_country', 'Passport is not available in the fixture provider.')
+    throw new TravelDataError(
+      'unsupported_country',
+      'Passport is not available in the fixture provider.',
+    )
   }
   return { passport, ...score }
 }
 
 export function fixtureAccess(passportSlug: string): PassportAccessSnapshot {
   const score = fixtureScore(passportSlug)
-  const destinations = passportSlug === 'nigeria'
-    ? nigeriaDestinations
-    : nigeriaDestinations.map((item, index) => ({
-        ...item,
-        classification: classification(
-          index < 4 ? 'visa_free' : index < 7 ? 'e_visa' : 'visa_required',
-        ),
-      }))
+  const destinations =
+    passportSlug === 'nigeria'
+      ? nigeriaDestinations
+      : nigeriaDestinations.map((item, index) => ({
+          ...item,
+          classification: classification(
+            index < 4 ? 'visa_free' : index < 7 ? 'e_visa' : 'visa_required',
+          ),
+        }))
 
   return {
     passport: score.passport,
     score,
     summary:
       passportSlug === 'nigeria'
-        ? { visaFree: 29, visaOnArrival: 15, eVisa: 41, eta: 2, visaRequired: 162 }
-        : { visaFree: score.visaFreeCount, visaOnArrival: 20, eVisa: 28, eta: 7, visaRequired: 54 },
+        ? {
+            visaFree: 29,
+            visaOnArrival: 15,
+            eVisa: 41,
+            eta: 2,
+            visaRequired: 162,
+          }
+        : {
+            visaFree: score.visaFreeCount,
+            visaOnArrival: 20,
+            eVisa: 28,
+            eta: 7,
+            visaRequired: 54,
+          },
     destinations,
     generatedAt: '2026-09-12T00:00:00.000Z',
     provider: 'fixture',
@@ -111,19 +168,52 @@ export function fixtureVisa(
   const passport = getCountryBySlug(passportSlug)
   const destinationCountry = getCountryBySlug(destinationSlug)
   if (!passport || !destinationCountry) {
-    throw new TravelDataError('unsupported_country', 'Passport or destination is unavailable.')
+    throw new TravelDataError(
+      'unsupported_country',
+      'Passport or destination is unavailable.',
+    )
   }
 
-  const access = fixtureAccess(passportSlug).destinations.find(
-    (item) => item.country.slug === destinationSlug,
-  )
-  const accessClassification = access?.classification ?? classification('unknown')
+  const access = scoreData[passportSlug]
+    ? fixtureAccess(passportSlug).destinations.find(
+        (item) => item.country.slug === destinationSlug,
+      )
+    : undefined
+  const accessClassification =
+    access?.classification ?? classification('unknown')
+
+  if (!access) {
+    return {
+      passport,
+      destination: destinationCountry,
+      classification: accessClassification,
+      stayDays: null,
+      description:
+        'This country pair is present in the catalogue, but no fixture or live Orizn intelligence is available for it.',
+      passportValidityMonths: { status: 'unavailable' },
+      documents: { status: 'unavailable' },
+      process: { status: 'unavailable' },
+      fees: { status: 'unavailable' },
+      transit: { status: 'unavailable' },
+      health: { status: 'unavailable' },
+      insurance: { status: 'unavailable' },
+      tips: [
+        'Select a fixture-supported passport and destination, or connect Orizn for live coverage.',
+      ],
+      provenance: {
+        verified: false,
+        source: 'development fixture',
+        sourceUrl: null,
+        lastVerifiedAt: null,
+      },
+    }
+  }
 
   return {
     passport,
     destination: destinationCountry,
     classification: accessClassification,
-    stayDays: access?.stayDays ?? null,
+    stayDays: access.stayDays,
     description:
       accessClassification.category === 'visa_required'
         ? `${passport.passportDemonym} passport holders should arrange the appropriate entry permission before travelling to ${destinationCountry.name}.`
@@ -131,17 +221,51 @@ export function fixtureVisa(
     passportValidityMonths: { status: 'available', value: 6 },
     documents: {
       status: 'available',
-      value: ['Passport valid beyond the intended stay', 'Proof of onward travel', 'Evidence of sufficient funds'],
+      value: [
+        'Passport valid beyond the intended stay',
+        'Proof of onward travel',
+        'Evidence of sufficient funds',
+      ],
     },
     process:
       accessClassification.category === 'visa_required'
-        ? { status: 'available', value: ['Confirm the correct visa category', 'Prepare the required documents', 'Apply through the relevant authority', 'Wait for a decision before travel'] }
-        : { status: 'available', value: ['Check passport validity', 'Complete any required arrival form', 'Carry supporting travel documents'] },
-    fees: { status: 'plan_gated', note: 'Fee information is not available in this development fixture.' },
-    transit: { status: 'uncertain', note: 'Transit rules can depend on airport, carrier, and itinerary.' },
-    health: { status: 'unavailable', note: 'No verified health requirement was supplied.' },
-    insurance: { status: 'unavailable', note: 'No verified insurance requirement was supplied.' },
-    tips: ['Check requirements again shortly before departure.', 'Keep copies of supporting documents accessible while travelling.'],
+        ? {
+            status: 'available',
+            value: [
+              'Confirm the correct visa category',
+              'Prepare the required documents',
+              'Apply through the relevant authority',
+              'Wait for a decision before travel',
+            ],
+          }
+        : {
+            status: 'available',
+            value: [
+              'Check passport validity',
+              'Complete any required arrival form',
+              'Carry supporting travel documents',
+            ],
+          },
+    fees: {
+      status: 'plan_gated',
+      note: 'Fee information is not available in this development fixture.',
+    },
+    transit: {
+      status: 'uncertain',
+      note: 'Transit rules can depend on airport, carrier, and itinerary.',
+    },
+    health: {
+      status: 'unavailable',
+      note: 'No verified health requirement was supplied.',
+    },
+    insurance: {
+      status: 'unavailable',
+      note: 'No verified insurance requirement was supplied.',
+    },
+    tips: [
+      'Check requirements again shortly before departure.',
+      'Keep copies of supporting documents accessible while travelling.',
+    ],
     provenance: {
       verified: false,
       source: 'development fixture',

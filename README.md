@@ -34,3 +34,10 @@ npm run build
 ```
 
 Normal development and tests use realistic fixtures and do not consume Orizn quota.
+
+## Data boundaries
+
+- The country and territory directory comes from a bundled ISO catalogue. It is not a claim of Orizn coverage.
+- Fixture mode contains illustrative visa data for six passports and ten destinations. The interface labels that data as a preview rather than current travel advice.
+- Live Orizn mode currently powers individual passport-to-destination visa lookups. Broader passport access and comparison endpoints remain intentionally unavailable until their response contracts are verified.
+- The application does not infer or assume a visitor's location. A passport is remembered locally only after the visitor explicitly selects and submits it.

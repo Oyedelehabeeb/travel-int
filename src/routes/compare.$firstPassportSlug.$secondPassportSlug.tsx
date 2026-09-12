@@ -1,5 +1,6 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { ArrowRight, Equal, Plus } from 'lucide-react'
+import { DataSourceNotice } from '#/components/DataSourceNotice'
 import { comparePassports } from '#/server/travel-intelligence/functions'
 
 export const Route = createFileRoute(
@@ -33,6 +34,7 @@ function ComparePage() {
         </h1>
         <p>See the meaningful differences—not two endless country lists.</p>
       </header>
+      <DataSourceNotice provider={comparison.provider} compact />
       <section className="passport-versus">
         {[comparison.first, comparison.second].map((passport) => (
           <article key={passport.passport.code}>

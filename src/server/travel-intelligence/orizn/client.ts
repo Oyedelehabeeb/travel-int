@@ -20,19 +20,44 @@ export class OriznClient {
       })
     } catch (error) {
       if (error instanceof DOMException && error.name === 'TimeoutError') {
-        throw new TravelDataError('provider_timeout', 'The visa provider timed out.')
+        throw new TravelDataError(
+          'provider_timeout',
+          'The visa provider timed out.',
+        )
       }
-      throw new TravelDataError('provider_unavailable', 'The visa provider is unavailable.')
+      throw new TravelDataError(
+        'provider_unavailable',
+        'The visa provider is unavailable.',
+      )
     }
 
-    if (response.status === 404) throw new TravelDataError('unsupported_pair', 'No visa record exists for this route.')
-    if (response.status === 429) throw new TravelDataError('quota_exhausted', 'The monthly provider quota is exhausted.')
-    if (response.status === 403) throw new TravelDataError('plan_restricted', 'The provider plan does not allow this request.')
-    if (!response.ok) throw new TravelDataError('unknown_provider_error', `The visa provider returned ${response.status}.`)
+    if (response.status === 404)
+      throw new TravelDataError(
+        'unsupported_pair',
+        'No visa record exists for this route.',
+      )
+    if (response.status === 429)
+      throw new TravelDataError(
+        'quota_exhausted',
+        'The monthly provider quota is exhausted.',
+      )
+    if (response.status === 403)
+      throw new TravelDataError(
+        'plan_restricted',
+        'The provider plan does not allow this request.',
+      )
+    if (!response.ok)
+      throw new TravelDataError(
+        'unknown_provider_error',
+        `The visa provider returned ${response.status}.`,
+      )
 
     const parsed = oriznVisaResponseSchema.safeParse(await response.json())
     if (!parsed.success) {
-      throw new TravelDataError('malformed_response', 'The visa provider returned an unexpected response.')
+      throw new TravelDataError(
+        'malformed_response',
+        'The visa provider returned an unexpected response.',
+      )
     }
     return parsed.data
   }

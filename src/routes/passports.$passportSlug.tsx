@@ -1,6 +1,7 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { ArrowRight, Globe2, Trophy } from 'lucide-react'
 import { AccessMapPreview } from '#/components/AccessMapPreview'
+import { DataSourceNotice } from '#/components/DataSourceNotice'
 import { getPassportAccess } from '#/server/travel-intelligence/functions'
 
 export const Route = createFileRoute('/passports/$passportSlug')({
@@ -36,6 +37,7 @@ function PassportPage() {
           <small>of {snapshot.score.totalRanked} passports</small>
         </div>
       </header>
+      <DataSourceNotice provider={snapshot.provider} compact />
       <section className="score-panel">
         <div>
           <p className="script-kicker">Mobility at a glance</p>

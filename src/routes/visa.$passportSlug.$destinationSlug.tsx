@@ -10,6 +10,7 @@ import {
   ShieldCheck,
 } from 'lucide-react'
 import { AccessStatus } from '#/components/AccessStatus'
+import { DataSourceNotice } from '#/components/DataSourceNotice'
 import type { IntelligenceField } from '#/domain/travel'
 import { getVisaIntelligence } from '#/server/travel-intelligence/functions'
 
@@ -37,15 +38,31 @@ function FieldNotice({ field }: { field: IntelligenceField<unknown> }) {
 
 function VisaPage() {
   const visa = Route.useLoaderData()
+  const provider =
+    visa.provenance.source === 'development fixture' ? 'fixture' : 'orizn'
+  const hasPassportPreview = visa.passport.fixturePassportCoverage
+  const duplicateHealthNotice =
+    visa.health.status === visa.insurance.status &&
+    visa.health.note === visa.insurance.note
   return (
     <main className="page-shell inner-page visa-page">
-      <Link
-        to="/explore/$passportSlug"
-        params={{ passportSlug: visa.passport.slug }}
-        className="back-link"
-      >
-        <ArrowLeft /> Back to {visa.passport.name} access
-      </Link>
+      {hasPassportPreview ? (
+        <Link
+          to="/explore/$passportSlug"
+          params={{ passportSlug: visa.passport.slug }}
+          className="back-link"
+        >
+          <ArrowLeft /> Back to {visa.passport.name} access
+        </Link>
+      ) : (
+        <Link
+          to="/destinations/$destinationSlug"
+          params={{ destinationSlug: visa.destination.slug }}
+          className="back-link"
+        >
+          <ArrowLeft /> Back to {visa.destination.name}
+        </Link>
+      )}
       <header className="visa-hero">
         <div className="route-flags">
           <span>{visa.passport.flag}</span>
@@ -71,6 +88,7 @@ function VisaPage() {
           </strong>
         </div>
       </header>
+      <DataSourceNotice provider={provider} compact />
 
       <div className="visa-layout">
         <div className="visa-main">
@@ -134,7 +152,9 @@ function VisaPage() {
             <article>
               <h3>Health & insurance</h3>
               <FieldNotice field={visa.health} />
-              <FieldNotice field={visa.insurance} />
+              {!duplicateHealthNotice ? (
+                <FieldNotice field={visa.insurance} />
+              ) : null}
             </article>
           </section>
         </div>
@@ -144,12 +164,16 @@ function VisaPage() {
           <h2>
             {visa.provenance.verified
               ? 'Official source verified'
-              : 'Provider intelligence'}
+              : provider === 'fixture'
+                ? 'Fixture provenance'
+                : 'Provider-supplied intelligence'}
           </h2>
           <p>
             {visa.provenance.verified
               ? 'This route was confirmed against an official source.'
-              : 'No directly citable official source was supplied for this fixture record.'}
+              : provider === 'fixture'
+                ? 'This illustrative record is not verified travel advice.'
+                : 'The Orizn response did not include a directly citable official source.'}
           </p>
           {visa.provenance.lastVerifiedAt && (
             <dl>

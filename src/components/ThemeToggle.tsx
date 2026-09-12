@@ -3,24 +3,31 @@ import { useEffect, useState } from 'react'
 
 type ThemeMode = 'light' | 'dark'
 
+const DEFAULT_THEME: ThemeMode = 'dark'
+const THEME_COLORS: Record<ThemeMode, string> = {
+  light: '#f8fbfd',
+  dark: '#182126',
+}
+
 function applyTheme(mode: ThemeMode) {
   document.documentElement.classList.remove('light', 'dark')
   document.documentElement.classList.add(mode)
   document.documentElement.dataset.theme = mode
   document.documentElement.style.colorScheme = mode
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute('content', THEME_COLORS[mode])
 }
 
 export default function ThemeToggle() {
-  const [mode, setMode] = useState<ThemeMode>('light')
+  const [mode, setMode] = useState<ThemeMode>(DEFAULT_THEME)
 
   useEffect(() => {
     const stored = window.localStorage.getItem('theme')
     const initial =
       stored === 'dark' || stored === 'light'
         ? stored
-        : window.matchMedia('(prefers-color-scheme: dark)').matches
-          ? 'dark'
-          : 'light'
+        : DEFAULT_THEME
     setMode(initial)
     applyTheme(initial)
   }, [])

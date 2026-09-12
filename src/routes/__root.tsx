@@ -5,6 +5,7 @@ import {
 } from '@tanstack/react-router'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
+import { NotFoundPage, RootErrorPage } from '../components/RouteState'
 
 import appCss from '../styles.css?url'
 
@@ -27,6 +28,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
+        name: 'theme-color',
+        content: '#f8fbfd',
+      },
+      {
         title: 'Travel Intelligence — Explore the world through your passport',
       },
       {
@@ -40,9 +45,16 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         rel: 'stylesheet',
         href: appCss,
       },
+      {
+        rel: 'icon',
+        type: 'image/svg+xml',
+        href: '/favicon.svg',
+      },
     ],
   }),
   shellComponent: RootDocument,
+  notFoundComponent: NotFoundPage,
+  errorComponent: ({ reset }) => <RootErrorPage reset={reset} />,
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
@@ -53,8 +65,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)]">
+        <a className="skip-link" href="#main-content">
+          Skip to main content
+        </a>
         <Header />
-        {children}
+        <div id="main-content" tabIndex={-1}>
+          {children}
+        </div>
         <Footer />
         <Scripts />
       </body>

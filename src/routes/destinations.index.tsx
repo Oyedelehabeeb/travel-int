@@ -1,12 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { CountryDirectory } from '#/components/CountryDirectory'
 import { countries } from '#/data/countries'
+import { buildSeo } from '#/lib/seo'
 
 export const Route = createFileRoute('/destinations/')({
   component: DestinationDirectoryPage,
-  head: () => ({
-    meta: [{ title: 'Destination directory — Travel Intelligence' }],
-  }),
+  head: () =>
+    buildSeo({
+      title: 'Destination directory',
+      description: `Search ${countries.length} countries and territories, then check entry requirements using your passport.`,
+      path: '/destinations',
+    }),
 })
 
 function DestinationDirectoryPage() {

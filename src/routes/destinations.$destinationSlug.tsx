@@ -1,8 +1,13 @@
 import { Link, notFound, createFileRoute } from '@tanstack/react-router'
 import { ArrowLeft, MapPin } from 'lucide-react'
 import { PassportSelector } from '#/components/PassportSelector'
+import {
+  TravelDataErrorState,
+  TravelDataPending,
+} from '#/components/TravelDataState'
 import { countries, getCountryBySlug } from '#/data/countries'
 import { getTravelCoverage } from '#/server/travel-intelligence/functions'
+import { buildSeo } from '#/lib/seo'
 
 export const Route = createFileRoute('/destinations/$destinationSlug')({
   loader: async ({ params }) => {
@@ -12,13 +17,23 @@ export const Route = createFileRoute('/destinations/$destinationSlug')({
     return { destination, coverage }
   },
   component: DestinationPage,
-  head: ({ loaderData }) => ({
-    meta: [
-      {
-        title: `${loaderData?.destination.name ?? ''} entry requirements — Travel Intelligence`,
-      },
-    ],
-  }),
+  pendingComponent: TravelDataPending,
+  errorComponent: ({ error, reset }) => (
+    <TravelDataErrorState error={error} onRetry={reset} />
+  ),
+  head: ({ loaderData }) =>
+    buildSeo({
+      title: loaderData
+        ? `${loaderData.destination.name} entry requirements`
+        : 'Destination entry requirements',
+      description: loaderData
+        ? `Explore ${loaderData.destination.name} and choose your passport to check the relevant visa and entry requirements.`
+        : 'Choose a destination and passport to check entry requirements.',
+      path: loaderData
+        ? `/destinations/${loaderData.destination.slug}`
+        : '/destinations',
+      noIndex: !loaderData,
+    }),
 })
 
 function DestinationPage() {

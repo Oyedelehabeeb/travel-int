@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <style>
+    .background { fill: #123a59; }
+    .mark { fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; }
+    @media (prefers-color-scheme: dark) {
+      .background { fill: #dbcbae; }
+    }
+  </style>
+  <circle class="background" cx="32" cy="32" r="29" />
+  <circle class="mark" cx="32" cy="32" r="17.5" stroke-width="3" opacity=".72" />
+  <path class="mark" d="M42.5 21.5 37 37l-15.5 5.5L27 27l15.5-5.5Z" stroke-width="4" />
+  <circle cx="32" cy="32" r="2.8" fill="#fff" />
+</svg>

@@ -1,15 +1,28 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { ComparisonSelector } from '#/components/ComparisonSelector'
 import { DataSourceNotice } from '#/components/DataSourceNotice'
+import {
+  TravelDataErrorState,
+  TravelDataPending,
+} from '#/components/TravelDataState'
 import { countries } from '#/data/countries'
+import { buildSeo } from '#/lib/seo'
 import { getTravelCoverage } from '#/server/travel-intelligence/functions'
 
 export const Route = createFileRoute('/compare/')({
   loader: () => getTravelCoverage(),
   component: CompareLandingPage,
-  head: () => ({
-    meta: [{ title: 'Compare passports — Travel Intelligence' }],
-  }),
+  pendingComponent: TravelDataPending,
+  errorComponent: ({ error, reset }) => (
+    <TravelDataErrorState error={error} onRetry={reset} />
+  ),
+  head: () =>
+    buildSeo({
+      title: 'Compare passports',
+      description:
+        'Compare two supported passports by mobility score, global rank, and meaningful access differences.',
+      path: '/compare',
+    }),
 })
 
 function CompareLandingPage() {

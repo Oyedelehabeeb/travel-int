@@ -2,15 +2,28 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Compass, Map, ShieldCheck } from 'lucide-react'
 import { DataSourceNotice } from '#/components/DataSourceNotice'
 import { PassportSelector } from '#/components/PassportSelector'
+import {
+  TravelDataErrorState,
+  TravelDataPending,
+} from '#/components/TravelDataState'
 import { countries } from '#/data/countries'
 import { getTravelCoverage } from '#/server/travel-intelligence/functions'
+import { buildSeo } from '#/lib/seo'
 
 export const Route = createFileRoute('/explore/')({
   loader: () => getTravelCoverage(),
   component: ExploreLandingPage,
-  head: () => ({
-    meta: [{ title: 'Explore passport access — Travel Intelligence' }],
-  }),
+  pendingComponent: TravelDataPending,
+  errorComponent: ({ error, reset }) => (
+    <TravelDataErrorState error={error} onRetry={reset} />
+  ),
+  head: () =>
+    buildSeo({
+      title: 'Explore passport access',
+      description:
+        'Choose a supported passport to explore its mobility score and available access-category intelligence.',
+      path: '/explore',
+    }),
 })
 
 function ExploreLandingPage() {

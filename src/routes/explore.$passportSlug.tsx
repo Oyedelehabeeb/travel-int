@@ -4,20 +4,33 @@ import { useMemo, useState } from 'react'
 import { AccessMapPreview } from '#/components/AccessMapPreview'
 import { AccessStatus } from '#/components/AccessStatus'
 import { DataSourceNotice } from '#/components/DataSourceNotice'
+import {
+  TravelDataErrorState,
+  TravelDataPending,
+} from '#/components/TravelDataState'
 import type { AccessCategory } from '#/domain/travel'
+import { buildSeo } from '#/lib/seo'
 import { getPassportAccess } from '#/server/travel-intelligence/functions'
 
 export const Route = createFileRoute('/explore/$passportSlug')({
   loader: ({ params }) =>
     getPassportAccess({ data: { passportSlug: params.passportSlug } }),
   component: ExplorePage,
-  head: ({ loaderData }) => ({
-    meta: [
-      {
-        title: `Explore with a ${loaderData?.passport.name ?? ''} passport — Travel Intelligence`,
-      },
-    ],
-  }),
+  pendingComponent: TravelDataPending,
+  errorComponent: ({ error, reset }) => (
+    <TravelDataErrorState error={error} onRetry={reset} />
+  ),
+  head: ({ loaderData }) =>
+    buildSeo({
+      title: loaderData
+        ? `Explore with a ${loaderData.passport.name} passport`
+        : 'Explore passport access',
+      description: loaderData
+        ? `Explore live mobility totals and available destination intelligence for a ${loaderData.passport.passportDemonym} passport.`
+        : 'Explore mobility and destination access for a supported passport.',
+      path: loaderData ? `/explore/${loaderData.passport.slug}` : '/explore',
+      noIndex: !loaderData,
+    }),
 })
 
 function ExplorePage() {

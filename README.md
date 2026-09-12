@@ -13,6 +13,7 @@ The application uses the fixture provider by default. Copy `.env.example` to `.e
 
 ```env
 TRAVEL_DATA_PROVIDER=fixture
+SERVER_URL=http://localhost:3000
 ```
 
 Live Orizn requests are server-only:
@@ -20,9 +21,11 @@ Live Orizn requests are server-only:
 ```env
 TRAVEL_DATA_PROVIDER=orizn
 ORIZN_API_KEY=your-server-only-key
+SERVER_URL=https://your-production-domain.example
 ```
 
 Never prefix `ORIZN_API_KEY` with `VITE_`.
+`SERVER_URL` is used to generate absolute canonical and social-sharing URLs.
 
 ## Quality checks
 
@@ -34,6 +37,24 @@ npm run build
 ```
 
 Normal development and tests use realistic fixtures and do not consume Orizn quota.
+
+## Vercel deployment
+
+The repository includes the TanStack Start framework preset, Nitro production
+output, Node.js 24 runtime alignment, and baseline response security headers.
+Import the Git repository into Vercel and configure these variables for both
+Preview and Production:
+
+```env
+TRAVEL_DATA_PROVIDER=orizn
+ORIZN_API_KEY=your-server-only-key
+SERVER_URL=https://your-production-domain.example
+```
+
+Keep `ORIZN_API_KEY` unprefixed so it remains server-only. Set `SERVER_URL` to
+the final public origin because it is used for canonical and social metadata.
+After deployment, verify a direct dynamic route, a server-backed passport page,
+and an individual visa lookup. The last check consumes one Orizn request.
 
 ## Data boundaries
 

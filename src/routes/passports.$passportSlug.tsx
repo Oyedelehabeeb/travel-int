@@ -2,19 +2,34 @@ import { Link, createFileRoute } from '@tanstack/react-router'
 import { ArrowRight, Globe2, Trophy } from 'lucide-react'
 import { AccessMapPreview } from '#/components/AccessMapPreview'
 import { DataSourceNotice } from '#/components/DataSourceNotice'
+import {
+  TravelDataErrorState,
+  TravelDataPending,
+} from '#/components/TravelDataState'
+import { buildSeo } from '#/lib/seo'
 import { getPassportAccess } from '#/server/travel-intelligence/functions'
 
 export const Route = createFileRoute('/passports/$passportSlug')({
   loader: ({ params }) =>
     getPassportAccess({ data: { passportSlug: params.passportSlug } }),
   component: PassportPage,
-  head: ({ loaderData }) => ({
-    meta: [
-      {
-        title: `${loaderData?.passport.name ?? ''} passport access — Travel Intelligence`,
-      },
-    ],
-  }),
+  pendingComponent: TravelDataPending,
+  errorComponent: ({ error, reset }) => (
+    <TravelDataErrorState error={error} onRetry={reset} />
+  ),
+  head: ({ loaderData }) =>
+    buildSeo({
+      title: loaderData
+        ? `${loaderData.passport.name} passport access`
+        : 'Passport access',
+      description: loaderData
+        ? `Explore the ${loaderData.passport.name} passport mobility score, global rank, and entry-access categories.`
+        : 'Explore passport mobility and entry-access categories.',
+      path: loaderData
+        ? `/passports/${loaderData.passport.slug}`
+        : '/passports',
+      noIndex: !loaderData,
+    }),
 })
 
 function PassportPage() {

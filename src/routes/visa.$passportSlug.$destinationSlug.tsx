@@ -22,6 +22,7 @@ import {
   TravelDataErrorState,
   TravelDataPending,
 } from '#/components/TravelDataState'
+import { buildSeo } from '#/lib/seo'
 
 export const Route = createFileRoute('/visa/$passportSlug/$destinationSlug')({
   loader: ({ params }) => getVisaIntelligence({ data: params }),
@@ -30,13 +31,19 @@ export const Route = createFileRoute('/visa/$passportSlug/$destinationSlug')({
   errorComponent: ({ error, reset }) => (
     <TravelDataErrorState error={error} onRetry={reset} />
   ),
-  head: ({ loaderData }) => ({
-    meta: [
-      {
-        title: `${loaderData?.passport.name ?? ''} to ${loaderData?.destination.name ?? ''} visa requirements`,
-      },
-    ],
-  }),
+  head: ({ loaderData }) =>
+    buildSeo({
+      title: loaderData
+        ? `${loaderData.passport.name} to ${loaderData.destination.name} visa requirements`
+        : 'Visa requirements',
+      description: loaderData
+        ? `Check ${loaderData.destination.name} visa and entry requirements for ${loaderData.passport.passportDemonym} passport holders, including available documents, timing, and conditions.`
+        : 'Check passport-specific visa and entry requirements for a destination.',
+      path: loaderData
+        ? `/visa/${loaderData.passport.slug}/${loaderData.destination.slug}`
+        : '/destinations',
+      noIndex: !loaderData,
+    }),
 })
 
 function FieldNotice({ field }: { field: IntelligenceField<unknown> }) {

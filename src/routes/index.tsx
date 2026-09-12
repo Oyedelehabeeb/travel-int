@@ -10,24 +10,28 @@ import {
 import { CountryCatalogueMap } from '#/components/CountryCatalogueMap'
 import { DataSourceNotice } from '#/components/DataSourceNotice'
 import { PassportSelector } from '#/components/PassportSelector'
+import {
+  TravelDataErrorState,
+  TravelDataPending,
+} from '#/components/TravelDataState'
 import { countries } from '#/data/countries'
+import { buildSeo } from '#/lib/seo'
 import { getTravelCoverage } from '#/server/travel-intelligence/functions'
 
 export const Route = createFileRoute('/')({
   loader: () => getTravelCoverage(),
   component: HomePage,
-  head: () => ({
-    meta: [
-      {
-        title: 'Travel Intelligence — Explore the world through your passport',
-      },
-      {
-        name: 'description',
-        content:
-          'See where your passport can take you, compare access, and understand entry requirements.',
-      },
-    ],
-  }),
+  pendingComponent: TravelDataPending,
+  errorComponent: ({ error, reset }) => (
+    <TravelDataErrorState error={error} onRetry={reset} />
+  ),
+  head: () =>
+    buildSeo({
+      title: 'Travel Intelligence — Explore the world through your passport',
+      description:
+        'See where your passport can take you, compare access, and understand entry requirements.',
+      path: '/',
+    }),
 })
 
 function HomePage() {

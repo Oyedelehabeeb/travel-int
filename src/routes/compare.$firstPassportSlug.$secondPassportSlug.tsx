@@ -1,6 +1,11 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { ArrowRight, Equal, Plus } from 'lucide-react'
 import { DataSourceNotice } from '#/components/DataSourceNotice'
+import {
+  TravelDataErrorState,
+  TravelDataPending,
+} from '#/components/TravelDataState'
+import { buildSeo } from '#/lib/seo'
 import { comparePassports } from '#/server/travel-intelligence/functions'
 
 export const Route = createFileRoute(
@@ -8,13 +13,23 @@ export const Route = createFileRoute(
 )({
   loader: ({ params }) => comparePassports({ data: params }),
   component: ComparePage,
-  head: ({ loaderData }) => ({
-    meta: [
-      {
-        title: `${loaderData?.first.passport.name ?? ''} vs ${loaderData?.second.passport.name ?? ''} passport comparison`,
-      },
-    ],
-  }),
+  pendingComponent: TravelDataPending,
+  errorComponent: ({ error, reset }) => (
+    <TravelDataErrorState error={error} onRetry={reset} />
+  ),
+  head: ({ loaderData }) =>
+    buildSeo({
+      title: loaderData
+        ? `${loaderData.first.passport.name} vs ${loaderData.second.passport.name} passport comparison`
+        : 'Passport comparison',
+      description: loaderData
+        ? `Compare ${loaderData.first.passport.name} and ${loaderData.second.passport.name} passport mobility scores, ranks, and access overlap.`
+        : 'Compare the mobility and access differences between two passports.',
+      path: loaderData
+        ? `/compare/${loaderData.first.passport.slug}/${loaderData.second.passport.slug}`
+        : '/compare',
+      noIndex: !loaderData,
+    }),
 })
 
 function ComparePage() {

@@ -1,7 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { ShieldCheck } from 'lucide-react'
+import { buildSeo } from '#/lib/seo'
 
-export const Route = createFileRoute('/about')({ component: AboutPage })
+export const Route = createFileRoute('/about')({
+  component: AboutPage,
+  head: () =>
+    buildSeo({
+      title: 'Methodology and data integrity',
+      description:
+        'Learn how Travel Intelligence handles provider data, uncertainty, provenance, and verification.',
+      path: '/about',
+    }),
+})
 
 function AboutPage() {
   return (

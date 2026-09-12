@@ -1,6 +1,10 @@
 import { createServerFn } from '@tanstack/react-start'
-import { z } from 'zod'
 import type { TravelCoverageStats } from '#/domain/travel'
+import {
+  comparisonRouteSchema,
+  passportRouteSchema,
+  visaRouteSchema,
+} from '#/lib/route-params'
 import { FixtureTravelProvider } from './fixture/provider'
 import { OriznTravelProvider } from './orizn/provider'
 import type { TravelIntelligenceProvider } from './provider'
@@ -17,17 +21,8 @@ function getProvider(): TravelIntelligenceProvider {
   return new FixtureTravelProvider()
 }
 
-const passportInput = z.object({ passportSlug: z.string().min(2).max(64) })
-const visaInput = passportInput.extend({
-  destinationSlug: z.string().min(2).max(64),
-})
-const comparisonInput = z.object({
-  firstPassportSlug: z.string().min(2).max(64),
-  secondPassportSlug: z.string().min(2).max(64),
-})
-
 export const getPassportAccess = createServerFn({ method: 'GET' })
-  .validator(passportInput)
+  .validator(passportRouteSchema)
   .handler(({ data }) => getProvider().getPassportAccess(data.passportSlug))
 
 let coverageCache: { expiresAt: number; value: TravelCoverageStats } | undefined
@@ -43,17 +38,17 @@ export const getTravelCoverage = createServerFn({ method: 'GET' }).handler(
 )
 
 export const getPassportScore = createServerFn({ method: 'GET' })
-  .validator(passportInput)
+  .validator(passportRouteSchema)
   .handler(({ data }) => getProvider().getPassportScore(data.passportSlug))
 
 export const getVisaIntelligence = createServerFn({ method: 'GET' })
-  .validator(visaInput)
+  .validator(visaRouteSchema)
   .handler(({ data }) =>
     getProvider().getVisaIntelligence(data.passportSlug, data.destinationSlug),
   )
 
 export const comparePassports = createServerFn({ method: 'GET' })
-  .validator(comparisonInput)
+  .validator(comparisonRouteSchema)
   .handler(({ data }) =>
     getProvider().comparePassports(
       data.firstPassportSlug,

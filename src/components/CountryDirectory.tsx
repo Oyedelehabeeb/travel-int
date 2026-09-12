@@ -9,17 +9,19 @@ import {
   SelectValue,
 } from '#/components/ui/select'
 import { countries, fixturePassportCountries } from '#/data/countries'
+import type { Country } from '#/domain/travel'
 
 export function CountryDirectory({
   kind,
+  passportCountries = fixturePassportCountries,
 }: {
   kind: 'passport' | 'destination'
+  passportCountries?: Country[]
 }) {
   const [query, setQuery] = useState('')
   const [continent, setContinent] = useState('all')
   const [showAll, setShowAll] = useState(false)
-  const sourceCountries =
-    kind === 'passport' ? fixturePassportCountries : countries
+  const sourceCountries = kind === 'passport' ? passportCountries : countries
   const continents = useMemo(
     () => [...new Set(sourceCountries.map((country) => country.continent))],
     [sourceCountries],
@@ -65,9 +67,11 @@ export function CountryDirectory({
               </SelectValue>
             </SelectTrigger>
             <SelectContent position="popper" className="travel-select-content">
-              <SelectItem value="all">All continents</SelectItem>
+              <SelectItem value="all" textValue="All continents">
+                All continents
+              </SelectItem>
               {continents.map((name) => (
-                <SelectItem key={name} value={name}>
+                <SelectItem key={name} value={name} textValue={name}>
                   {name}
                 </SelectItem>
               ))}

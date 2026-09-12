@@ -1,5 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
+import type { TravelCoverageStats } from '#/domain/travel'
 import { FixtureTravelProvider } from './fixture/provider'
 import { OriznTravelProvider } from './orizn/provider'
 import type { TravelIntelligenceProvider } from './provider'
@@ -28,6 +29,18 @@ const comparisonInput = z.object({
 export const getPassportAccess = createServerFn({ method: 'GET' })
   .validator(passportInput)
   .handler(({ data }) => getProvider().getPassportAccess(data.passportSlug))
+
+let coverageCache: { expiresAt: number; value: TravelCoverageStats } | undefined
+
+export const getTravelCoverage = createServerFn({ method: 'GET' }).handler(
+  async () => {
+    if (coverageCache && coverageCache.expiresAt > Date.now())
+      return coverageCache.value
+    const value = await getProvider().getCoverageStats()
+    coverageCache = { value, expiresAt: Date.now() + 60 * 60 * 1000 }
+    return value
+  },
+)
 
 export const getPassportScore = createServerFn({ method: 'GET' })
   .validator(passportInput)

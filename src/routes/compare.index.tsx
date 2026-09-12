@@ -1,8 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { ComparisonSelector } from '#/components/ComparisonSelector'
 import { DataSourceNotice } from '#/components/DataSourceNotice'
+import { countries } from '#/data/countries'
+import { getTravelCoverage } from '#/server/travel-intelligence/functions'
 
 export const Route = createFileRoute('/compare/')({
+  loader: () => getTravelCoverage(),
   component: CompareLandingPage,
   head: () => ({
     meta: [{ title: 'Compare passports — Travel Intelligence' }],
@@ -10,6 +13,11 @@ export const Route = createFileRoute('/compare/')({
 })
 
 function CompareLandingPage() {
+  const coverage = Route.useLoaderData()
+  const supportedCodes = new Set(coverage.supportedPassportCodes)
+  const passportCountries = countries.filter((country) =>
+    supportedCodes.has(country.code),
+  )
   return (
     <main className="page-shell inner-page directory-page">
       <header className="directory-hero">
@@ -20,8 +28,8 @@ function CompareLandingPage() {
           focus on the differences that change where you can travel.
         </p>
       </header>
-      <DataSourceNotice provider="fixture" />
-      <ComparisonSelector />
+      <DataSourceNotice provider={coverage.provider} />
+      <ComparisonSelector passportCountries={passportCountries} />
     </main>
   )
 }

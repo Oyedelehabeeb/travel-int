@@ -10,9 +10,11 @@ import {
 import { CountryCatalogueMap } from '#/components/CountryCatalogueMap'
 import { DataSourceNotice } from '#/components/DataSourceNotice'
 import { PassportSelector } from '#/components/PassportSelector'
-import { countries, fixturePassportCountries } from '#/data/countries'
+import { countries } from '#/data/countries'
+import { getTravelCoverage } from '#/server/travel-intelligence/functions'
 
 export const Route = createFileRoute('/')({
+  loader: () => getTravelCoverage(),
   component: HomePage,
   head: () => ({
     meta: [
@@ -29,6 +31,11 @@ export const Route = createFileRoute('/')({
 })
 
 function HomePage() {
+  const coverage = Route.useLoaderData()
+  const supportedCodes = new Set(coverage.supportedPassportCodes)
+  const passportCountries = countries.filter((country) =>
+    supportedCodes.has(country.code),
+  )
   return (
     <main>
       <section className="hero page-shell">
@@ -41,7 +48,7 @@ function HomePage() {
             Visa intelligence shaped around the passport you choose—so you can
             see what is open, what needs planning, and where to go next.
           </p>
-          <PassportSelector />
+          <PassportSelector passportCountries={passportCountries} />
           <div className="trust-line">
             <ShieldCheck aria-hidden="true" />
             <span>No location detection</span>
@@ -88,15 +95,15 @@ function HomePage() {
           <span>catalogue entries</span>
         </div>
         <div>
-          <strong>{fixturePassportCountries.length}</strong>
-          <span>passport previews</span>
+          <strong>{coverage.passportCount}</strong>
+          <span>supported passports</span>
         </div>
         <div>
           <strong>0</strong>
           <span>location assumptions</span>
         </div>
         <div>
-          <strong>Off</strong>
+          <strong>{coverage.provider === 'orizn' ? 'On' : 'Off'}</strong>
           <span>live Orizn mode</span>
         </div>
         <p>
@@ -106,7 +113,7 @@ function HomePage() {
       </section>
 
       <div className="page-shell source-notice-wrap">
-        <DataSourceNotice provider="fixture" />
+        <DataSourceNotice provider={coverage.provider} />
       </div>
       <div className="page-shell section-space">
         <CountryCatalogueMap />
@@ -141,8 +148,8 @@ function HomePage() {
             <span className="eyebrow">Show me what’s possible</span>
             <h3>Choose your world view</h3>
             <p>
-              Select a fixture-supported passport and explore its clearly
-              labelled preview.
+              Select a supported passport and explore its available mobility
+              intelligence.
             </p>
             <span className="text-link">
               Choose a passport <ArrowRight />

@@ -158,6 +158,7 @@ export function fixtureAccess(passportSlug: string): PassportAccessSnapshot {
     destinations,
     generatedAt: '2026-09-12T00:00:00.000Z',
     provider: 'fixture',
+    destinationCoverage: 'preview',
   }
 }
 

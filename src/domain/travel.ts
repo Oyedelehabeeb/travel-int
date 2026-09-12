@@ -65,6 +65,16 @@ export interface PassportAccessSnapshot {
   destinations: DestinationAccess[]
   generatedAt: string
   provider: 'fixture' | 'orizn'
+  destinationCoverage: 'preview' | 'complete' | 'plan_gated'
+}
+
+export interface TravelCoverageStats {
+  passportCount: number
+  destinationCount: number
+  visaDetailCount: number
+  supportedPassportCodes: string[]
+  supportedDestinationCodes: string[]
+  provider: 'fixture' | 'orizn'
 }
 
 export interface IntelligenceField<T> {

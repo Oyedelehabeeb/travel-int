@@ -1,26 +1,32 @@
 import { Link, notFound, createFileRoute } from '@tanstack/react-router'
 import { ArrowLeft, MapPin } from 'lucide-react'
 import { PassportSelector } from '#/components/PassportSelector'
-import { getCountryBySlug } from '#/data/countries'
+import { countries, getCountryBySlug } from '#/data/countries'
+import { getTravelCoverage } from '#/server/travel-intelligence/functions'
 
 export const Route = createFileRoute('/destinations/$destinationSlug')({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const destination = getCountryBySlug(params.destinationSlug)
     if (!destination) throw notFound()
-    return destination
+    const coverage = await getTravelCoverage()
+    return { destination, coverage }
   },
   component: DestinationPage,
   head: ({ loaderData }) => ({
     meta: [
       {
-        title: `${loaderData?.name ?? ''} entry requirements — Travel Intelligence`,
+        title: `${loaderData?.destination.name ?? ''} entry requirements — Travel Intelligence`,
       },
     ],
   }),
 })
 
 function DestinationPage() {
-  const destination = Route.useLoaderData()
+  const { destination, coverage } = Route.useLoaderData()
+  const supportedCodes = new Set(coverage.supportedPassportCodes)
+  const passportCountries = countries.filter((country) =>
+    supportedCodes.has(country.code),
+  )
   return (
     <main className="page-shell inner-page">
       <Link to="/destinations" className="back-link">
@@ -50,7 +56,11 @@ function DestinationPage() {
             intelligence.
           </p>
         </div>
-        <PassportSelector compact destinationSlug={destination.slug} />
+        <PassportSelector
+          compact
+          destinationSlug={destination.slug}
+          passportCountries={passportCountries}
+        />
       </section>
       <section className="editorial-grid">
         <article>
@@ -81,9 +91,11 @@ function DestinationPage() {
       <div className="catalogue-disclosure">
         <strong>Catalogue profile</strong>
         <span>
-          {destination.fixtureDestinationCoverage
-            ? 'This destination has representative fixture coverage for supported preview passports.'
-            : 'No fixture intelligence is available for this destination. Selecting a passport will show an explicit unavailable-data state until live Orizn coverage is verified.'}
+          {coverage.provider === 'orizn'
+            ? 'Choose a supported passport to request live Orizn intelligence for this destination.'
+            : destination.fixtureDestinationCoverage
+              ? 'This destination has representative fixture coverage for supported preview passports.'
+              : 'No fixture intelligence is available for this destination. Selecting a passport will show an explicit unavailable-data state until live Orizn coverage is verified.'}
         </span>
       </div>
     </main>

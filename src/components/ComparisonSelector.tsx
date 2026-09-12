@@ -9,8 +9,13 @@ import {
   SelectValue,
 } from '#/components/ui/select'
 import { fixturePassportCountries } from '#/data/countries'
+import type { Country } from '#/domain/travel'
 
-export function ComparisonSelector() {
+export function ComparisonSelector({
+  passportCountries = fixturePassportCountries,
+}: {
+  passportCountries?: Country[]
+}) {
   const navigate = useNavigate()
   const firstId = useId()
   const secondId = useId()
@@ -43,8 +48,12 @@ export function ComparisonSelector() {
             <SelectValue placeholder="Choose a passport" />
           </SelectTrigger>
           <SelectContent position="popper" className="travel-select-content">
-            {fixturePassportCountries.map((country) => (
-              <SelectItem key={country.code} value={country.slug}>
+            {passportCountries.map((country) => (
+              <SelectItem
+                key={country.code}
+                value={country.slug}
+                textValue={country.name}
+              >
                 {country.flag} {country.name}
               </SelectItem>
             ))}
@@ -62,8 +71,12 @@ export function ComparisonSelector() {
             <SelectValue placeholder="Choose a passport" />
           </SelectTrigger>
           <SelectContent position="popper" className="travel-select-content">
-            {fixturePassportCountries.map((country) => (
-              <SelectItem key={country.code} value={country.slug}>
+            {passportCountries.map((country) => (
+              <SelectItem
+                key={country.code}
+                value={country.slug}
+                textValue={country.name}
+              >
                 {country.flag} {country.name}
               </SelectItem>
             ))}

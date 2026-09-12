@@ -101,12 +101,9 @@ function ExplorePage() {
         ))}
       </div>
       <p className="filter-result" aria-live="polite">
-        Showing {destinations.length} of {snapshot.destinations.length} preview
-        destinations
-        {category || query
-          ? ' · select the active filter again to clear it'
-          : ''}
-        .
+        {snapshot.destinationCoverage === 'plan_gated'
+          ? 'Live category totals are shown. Country-by-country access is unavailable on the configured Orizn plan.'
+          : `Showing ${destinations.length} of ${snapshot.destinations.length} preview destinations${category || query ? ' · select the active filter again to clear it' : ''}.`}
       </p>
       <AccessMapPreview snapshot={filteredSnapshot} limit={10} />
       <section className="all-destinations">
@@ -139,9 +136,15 @@ function ExplorePage() {
           ))}
           {destinations.length === 0 ? (
             <div className="destination-empty">
-              <strong>No matching destinations</strong>
+              <strong>
+                {snapshot.destinationCoverage === 'plan_gated'
+                  ? 'Destination list unavailable on this plan'
+                  : 'No matching destinations'}
+              </strong>
               <span>
-                Try a different search or clear the active access filter.
+                {snapshot.destinationCoverage === 'plan_gated'
+                  ? 'Individual passport-to-destination checks still use live Orizn data.'
+                  : 'Try a different search or clear the active access filter.'}
               </span>
             </div>
           ) : null}

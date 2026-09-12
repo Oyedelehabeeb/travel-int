@@ -1,7 +1,24 @@
+import { fixturePassportCountries, countries } from '#/data/countries'
 import type { TravelIntelligenceProvider } from '../provider'
 import { fixtureAccess, fixtureScore, fixtureVisa } from './fixtures'
 
 export class FixtureTravelProvider implements TravelIntelligenceProvider {
+  async getCoverageStats() {
+    const destinations = countries.filter(
+      (country) => country.fixtureDestinationCoverage,
+    )
+    return {
+      passportCount: fixturePassportCountries.length,
+      destinationCount: destinations.length,
+      visaDetailCount: 10,
+      supportedPassportCodes: fixturePassportCountries.map(
+        (country) => country.code,
+      ),
+      supportedDestinationCodes: destinations.map((country) => country.code),
+      provider: 'fixture' as const,
+    }
+  }
+
   async getPassportAccess(passportSlug: string) {
     return fixtureAccess(passportSlug)
   }

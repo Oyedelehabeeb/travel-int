@@ -9,15 +9,18 @@ import {
   SelectValue,
 } from '#/components/ui/select'
 import { fixturePassportCountries } from '#/data/countries'
+import type { Country } from '#/domain/travel'
 
 const savedPassportKey = 'travel-intelligence:passport'
 
 export function PassportSelector({
   compact = false,
   destinationSlug,
+  passportCountries = fixturePassportCountries,
 }: {
   compact?: boolean
   destinationSlug?: string
+  passportCountries?: Country[]
 }) {
   const navigate = useNavigate()
   const inputId = useId()
@@ -27,11 +30,11 @@ export function PassportSelector({
     const savedPassport = window.localStorage.getItem(savedPassportKey)
     if (
       savedPassport &&
-      fixturePassportCountries.some((country) => country.slug === savedPassport)
+      passportCountries.some((country) => country.slug === savedPassport)
     ) {
       setPassportSlug(savedPassport)
     }
-  }, [destinationSlug])
+  }, [destinationSlug, passportCountries])
 
   return (
     <form
@@ -55,11 +58,7 @@ export function PassportSelector({
     >
       <label htmlFor={inputId}>
         Passport
-        <span>
-          {destinationSlug
-            ? 'Choose a passport available in this preview'
-            : 'Six passport previews available'}
-        </span>
+        <span>{passportCountries.length} supported passports available</span>
       </label>
       <div className="passport-control">
         <Select value={passportSlug} onValueChange={setPassportSlug}>
@@ -71,8 +70,12 @@ export function PassportSelector({
             align="start"
             className="travel-select-content"
           >
-            {fixturePassportCountries.map((country) => (
-              <SelectItem key={country.code} value={country.slug}>
+            {passportCountries.map((country) => (
+              <SelectItem
+                key={country.code}
+                value={country.slug}
+                textValue={country.name}
+              >
                 {country.flag} {country.name}
               </SelectItem>
             ))}

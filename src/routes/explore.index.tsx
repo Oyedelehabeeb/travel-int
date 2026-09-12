@@ -2,8 +2,11 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Compass, Map, ShieldCheck } from 'lucide-react'
 import { DataSourceNotice } from '#/components/DataSourceNotice'
 import { PassportSelector } from '#/components/PassportSelector'
+import { countries } from '#/data/countries'
+import { getTravelCoverage } from '#/server/travel-intelligence/functions'
 
 export const Route = createFileRoute('/explore/')({
+  loader: () => getTravelCoverage(),
   component: ExploreLandingPage,
   head: () => ({
     meta: [{ title: 'Explore passport access — Travel Intelligence' }],
@@ -11,6 +14,11 @@ export const Route = createFileRoute('/explore/')({
 })
 
 function ExploreLandingPage() {
+  const coverage = Route.useLoaderData()
+  const supportedCodes = new Set(coverage.supportedPassportCodes)
+  const passportCountries = countries.filter((country) =>
+    supportedCodes.has(country.code),
+  )
   return (
     <main className="page-shell inner-page directory-page">
       <header className="directory-hero">
@@ -21,8 +29,8 @@ function ExploreLandingPage() {
           passport you actually travel with to begin.
         </p>
       </header>
-      <PassportSelector />
-      <DataSourceNotice provider="fixture" />
+      <PassportSelector passportCountries={passportCountries} />
+      <DataSourceNotice provider={coverage.provider} />
       <section
         className="landing-steps"
         aria-label="How passport exploration works"

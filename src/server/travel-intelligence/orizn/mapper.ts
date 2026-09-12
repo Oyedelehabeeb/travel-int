@@ -4,9 +4,17 @@ import type {
   AccessCategory,
   AccessClassification,
   IntelligenceField,
+  PassportComparison,
+  PassportScore,
+  TravelCoverageStats,
   VisaIntelligence,
 } from '#/domain/travel'
-import type { OriznVisaResponse } from './schemas'
+import type {
+  OriznCompareResponse,
+  OriznScoreResponse,
+  OriznStatsResponse,
+  OriznVisaResponse,
+} from './schemas'
 
 const requirementMap: Record<string, AccessCategory> = {
   visa_free: 'visa_free',
@@ -43,6 +51,64 @@ export function normalizeRequirement(raw: string): AccessClassification {
         : category === 'unknown'
           ? null
           : true,
+  }
+}
+
+export function mapOriznScore(response: OriznScoreResponse): PassportScore {
+  const passport = getCountryByCode(response.passport)
+  if (!passport) {
+    throw new TravelDataError(
+      'unsupported_country',
+      'Orizn returned an unsupported passport code.',
+    )
+  }
+  return {
+    passport,
+    score: response.score,
+    rank: response.rank,
+    totalRanked: response.total_ranked,
+    percentile: response.percentile,
+    visaFreeCount: response.visa_free_count,
+  }
+}
+
+export function mapOriznComparison(
+  response: OriznCompareResponse,
+  first: PassportScore,
+  second: PassportScore,
+): PassportComparison {
+  if (
+    response.passport1.code !== first.passport.code ||
+    response.passport2.code !== second.passport.code
+  ) {
+    throw new TravelDataError(
+      'malformed_response',
+      'Orizn returned a comparison for different passports.',
+    )
+  }
+  return {
+    first,
+    second,
+    combinedScore: response.combined.score,
+    accessibleTogether: response.combined.total_accessible,
+    onlyFirst: response.combined.only_passport1_count,
+    onlySecond: response.combined.only_passport2_count,
+    both: response.combined.both_count,
+    neither: response.combined.neither_count,
+    provider: 'orizn',
+  }
+}
+
+export function mapOriznCoverage(
+  response: OriznStatsResponse,
+): TravelCoverageStats {
+  return {
+    passportCount: response.coverage.passports,
+    destinationCount: response.coverage.destinations,
+    visaDetailCount: response.coverage.visa_details,
+    supportedPassportCodes: response.passports,
+    supportedDestinationCodes: response.destinations,
+    provider: 'orizn',
   }
 }
 

@@ -106,6 +106,16 @@ export function AccessMapPreview({
               />
             </Link>
           ))}
+          {visible.length === 0 &&
+          snapshot.destinationCoverage === 'plan_gated' ? (
+            <div className="destination-empty">
+              <strong>Destination-level access needs Orizn Pro</strong>
+              <span>
+                The live score and category totals are available, but the Free
+                plan does not return the country-by-country bulk dataset.
+              </span>
+            </div>
+          ) : null}
         </div>
       </div>
     </section>
